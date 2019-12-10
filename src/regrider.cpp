@@ -18,12 +18,12 @@
 
 #include <fmt/core.h>
 #include <fmt/ostream.h>
+#include <cxxopts.hpp>
 #include <fstream>
 #include <string>
 #include <vector>
 #include <cstring>
-
-#include "../include/cxxopts.hpp"
+#include <fftw3.h>
 
 
 static void read_gbptrees(const std::string fname_in, const std::string grid_name)
@@ -47,8 +47,9 @@ static void read_gbptrees(const std::string fname_in, const std::string grid_nam
     ifs.read((char*)(&ma_scheme), sizeof(int));
     fmt::print("ma_scheme = {}\n", ma_scheme);
 
-    auto total_cells = n_cell[0] * n_cell[1] * n_cell[2];
-    std::vector<float> orig(total_cells, 0);
+    auto n_logical = n_cell[0] * n_cell[1] * n_cell[2];
+    auto n_padded = n_cell[0] * n_cell[1] * 2*(n_cell[2]/2+1);
+    std::unique_ptr<float, void(*)(float*)> orig(fftwf_alloc_real(n_padded), [](float* orig){ fftwf_free(orig); });
 
     bool found = false;
     for(int32_t ii=0; ii<n_grids && !found; ++ii){
@@ -59,26 +60,27 @@ static void read_gbptrees(const std::string fname_in, const std::string grid_nam
         
         if (grid_name == ident) {
             fmt::print("Reading grid {}...\n", ident);
-            ifs.read((char*)(orig.data()), sizeof(float)*total_cells);
+            ifs.read((char*)orig.get(), sizeof(float)*n_logical);
             found = true;
         } else {
             fmt::print("Skipping grid {}...\n", ident);
-            ifs.seekg(sizeof(float)*total_cells, std::ifstream::cur);
+            ifs.seekg(sizeof(float)*n_logical, std::ifstream::cur);
         }
 
     }
+
+    ifs.close();
 
     if (!found) {
         fmt::print(stderr, "Failed to find grid named `{}' in file!\n", grid_name);
     }
 
-    // // DEBUG
-    // {
-    //     std::vector subset(orig.begin(), orig.begin()+10);
-    //     fmt::print("First 10 elements = {}\n", fmt::join(subset, ","));
-    // }
+    // DEBUG
+    {
+        std::vector subset(orig.get(), orig.get() + 10);
+        fmt::print("First 10 elements = {}\n", fmt::join(subset, ","));
+    }
 
-    ifs.close();
     fmt::print("...done\n");
 }
 
