@@ -22,8 +22,68 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <array>
 #include <cstring>
 #include <fftw3.h>
+
+
+class Grid {
+    std::array<int32_t, 3> n_cell;
+    int n_padded;
+    int n_logical;
+    std::unique_ptr<float, void(*)(float*)> grid;
+
+    public:
+
+    Grid(std::array<int32_t, 3>n_cell_) :
+        n_cell{n_cell_},
+        n_logical{n_cell[0] * n_cell[1] * n_cell[2]},
+        n_padded{n_cell[0] * n_cell[1] * 2*(n_cell[2]/2+1)}, 
+        grid(fftwf_alloc_real(n_padded), [](float* grid){ fftwf_free(grid); })
+        {};
+
+    float* get() {
+        return grid.get();
+    }
+
+    enum index_type {
+        padded,
+        real
+    };
+
+    constexpr int index(int i, int j, int k, index_type type) {
+        auto index = k + n_cell[1] * (j + n_cell[0] * i);
+        assert(index < n_logical);
+
+        switch (type) {
+            case padded:
+                index = k + (2 * (n_cell[1] / 2 + 1)) * (j + n_cell[0] * i);
+                break;
+            case real:
+                break;
+            default:
+                fmt::print(stderr, "Unrecognised index_type!\n");
+                break;
+        }
+
+        return index;
+    }
+
+    void real_to_padded_order() {
+        for (int32_t ii = n_cell[0]-1; ii >= 0; --ii)
+            for (int32_t jj = n_cell[1] - 1; jj >= 0; --jj)
+                for (int32_t kk = n_cell[2] - 1; kk >= 0; --kk)
+                    grid.get()[index(ii, jj, kk, index_type::padded)] = grid.get()[index(ii, jj, kk, index_type::real)];
+    }
+
+    void padded_to_real_order() {
+        for (int32_t ii = n_cell[0]-1; ii >= 0; --ii)
+            for (int32_t jj = n_cell[1] - 1; jj >= 0; --jj)
+                for (int32_t kk = n_cell[2] - 1; kk >= 0; --kk)
+                    grid.get()[index(ii, jj, kk, index_type::real)] = grid.get()[index(ii, jj, kk, index_type::padded)];
+    }
+
+};
 
 
 static void read_gbptrees(const std::string fname_in, const std::string grid_name)
@@ -31,11 +91,11 @@ static void read_gbptrees(const std::string fname_in, const std::string grid_nam
     fmt::print("Reading gbpTrees grid file {}...\n", fname_in);
     std::ifstream ifs(fname_in, std::ios::binary | std::ios::in);
 
-    std::vector<int> n_cell(3);
+    std::array<int, 3> n_cell;
     ifs.read((char*)(n_cell.data()), sizeof(int) * 3);
     fmt::print("n_cell = {}\n", fmt::join(n_cell, ","));
 
-    std::vector<double> box_size(3);
+    std::array<double, 3> box_size;
     ifs.read((char*)(box_size.data()), sizeof(double) * 3);
     fmt::print("box_size = {}\n", fmt::join(box_size, ","));
 
@@ -49,7 +109,7 @@ static void read_gbptrees(const std::string fname_in, const std::string grid_nam
 
     auto n_logical = n_cell[0] * n_cell[1] * n_cell[2];
     auto n_padded = n_cell[0] * n_cell[1] * 2*(n_cell[2]/2+1);
-    std::unique_ptr<float, void(*)(float*)> orig(fftwf_alloc_real(n_padded), [](float* orig){ fftwf_free(orig); });
+    auto orig = Grid(n_cell);
 
     bool found = false;
     for(int32_t ii=0; ii<n_grids && !found; ++ii){
@@ -73,6 +133,7 @@ static void read_gbptrees(const std::string fname_in, const std::string grid_nam
 
     if (!found) {
         fmt::print(stderr, "Failed to find grid named `{}' in file!\n", grid_name);
+        return;
     }
 
     // DEBUG
@@ -80,6 +141,8 @@ static void read_gbptrees(const std::string fname_in, const std::string grid_nam
         std::vector subset(orig.get(), orig.get() + 10);
         fmt::print("First 10 elements = {}\n", fmt::join(subset, ","));
     }
+
+    orig.real_to_padded_order();
 
     fmt::print("...done\n");
 }
