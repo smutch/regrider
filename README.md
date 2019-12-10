@@ -11,7 +11,8 @@ Natively handles gbpTrees and VELOCIraptor files.
 TODO
 ----
 
-- [ ] Malloc orig using FFTW and do an inplace FFT
+- [X] Malloc orig using FFTW (with inplace padding)
+- [ ] Do an inplace FFT
 - [ ] Convolution
 - [ ] Inverse FFTW
 - [ ] Reshuffle data inplace
