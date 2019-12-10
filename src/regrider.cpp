@@ -32,19 +32,19 @@ static void read_gbptrees(const std::string fname_in, const std::string grid_nam
     std::ifstream ifs(fname_in, std::ios::binary | std::ios::in);
 
     std::vector<int> n_cell(3);
-    ifs.read(reinterpret_cast<char*>(n_cell.data()), sizeof(int) * 3);
+    ifs.read((char*)(n_cell.data()), sizeof(int) * 3);
     fmt::print("n_cell = {}\n", fmt::join(n_cell, ","));
 
     std::vector<double> box_size(3);
-    ifs.read(reinterpret_cast<char*>(box_size.data()), sizeof(double) * 3);
+    ifs.read((char*)(box_size.data()), sizeof(double) * 3);
     fmt::print("box_size = {}\n", fmt::join(box_size, ","));
 
     int32_t n_grids;
-    ifs.read(reinterpret_cast<char*>(&n_grids), sizeof(int));
+    ifs.read((char*)(&n_grids), sizeof(int));
     fmt::print("n_grids = {}\n", n_grids);
 
     int32_t ma_scheme;
-    ifs.read(reinterpret_cast<char*>(&ma_scheme), sizeof(int));
+    ifs.read((char*)(&ma_scheme), sizeof(int));
     fmt::print("ma_scheme = {}\n", ma_scheme);
 
     auto total_cells = n_cell[0] * n_cell[1] * n_cell[2];
@@ -54,12 +54,12 @@ static void read_gbptrees(const std::string fname_in, const std::string grid_nam
     for(int32_t ii=0; ii<n_grids && !found; ++ii){
 
         std::string ident(32, '\0');
-        ifs.read(reinterpret_cast<char*>(ident.data()), sizeof(ident));
+        ifs.read((char*)(ident.data()), sizeof(ident));
         ident.resize(strlen(ident.c_str()));
         
         if (grid_name == ident) {
             fmt::print("Reading grid {}...\n", ident);
-            ifs.read(reinterpret_cast<char*>(orig.data()), sizeof(float)*total_cells);
+            ifs.read((char*)(orig.data()), sizeof(float)*total_cells);
             found = true;
         } else {
             fmt::print("Skipping grid {}...\n", ident);
