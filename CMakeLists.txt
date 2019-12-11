@@ -22,10 +22,15 @@ set_property(TARGET regrider PROPERTY CXX_STANDARD 20)
 
 target_include_directories(regrider PRIVATE "${CMAKE_SOURCE_DIR}/include")
 
+find_package(OpenMP)
+if(OpenMP_CXX_FOUND)
+    target_link_libraries(regrider PRIVATE OpenMP::OpenMP_CXX)
+endif()
+
 find_package(fmt)
 target_link_libraries(regrider PRIVATE fmt::fmt)
 
-find_path(FFTW_LIBRARY_DIR libfftw3f.a)
-target_link_libraries(regrider PRIVATE "${FFTW_LIBRARY_DIR}/libfftw3f.a")
+find_path(FFTW_LIBRARY_DIR libfftw3f_omp.a)
+target_link_libraries(regrider PRIVATE "${FFTW_LIBRARY_DIR}/libfftw3f_omp.a" "${FFTW_LIBRARY_DIR}/libfftw3f.a")
 find_path(FFTW_INCLUDE_DIR fftw3f.h)
 target_include_directories(regrider PRIVATE "${FFTW_INCLUDE_DIR}")

@@ -25,25 +25,30 @@
 #include <array>
 #include <cstring>
 #include <fftw3.h>
+#include <omp.h>
 
 
 class Grid {
-    std::array<int32_t, 3> n_cell;
-    int n_padded;
-    int n_logical;
-    std::unique_ptr<float, void(*)(float*)> grid;
-
     public:
+    std::array<int32_t, 3> n_cell;
+    int n_logical;
+    int n_padded;
+    int n_complex;
 
     Grid(std::array<int32_t, 3>n_cell_) :
         n_cell{n_cell_},
         n_logical{n_cell[0] * n_cell[1] * n_cell[2]},
         n_padded{n_cell[0] * n_cell[1] * 2*(n_cell[2]/2+1)}, 
+        n_complex{n_cell[0] * n_cell[1] * (n_cell[2]/2+1)},
         grid(fftwf_alloc_real(n_padded), [](float* grid){ fftwf_free(grid); })
         {};
 
     float* get() {
         return grid.get();
+    }
+
+    fftwf_complex* get_complex() {
+        return (fftwf_complex*)grid.get();
     }
 
     enum index_type {
@@ -83,6 +88,8 @@ class Grid {
                     grid.get()[index(ii, jj, kk, index_type::real)] = grid.get()[index(ii, jj, kk, index_type::padded)];
     }
 
+    private:
+    std::unique_ptr<float, void(*)(float*)> grid;
 };
 
 
@@ -107,8 +114,6 @@ static void read_gbptrees(const std::string fname_in, const std::string grid_nam
     ifs.read((char*)(&ma_scheme), sizeof(int));
     fmt::print("ma_scheme = {}\n", ma_scheme);
 
-    auto n_logical = n_cell[0] * n_cell[1] * n_cell[2];
-    auto n_padded = n_cell[0] * n_cell[1] * 2*(n_cell[2]/2+1);
     auto orig = Grid(n_cell);
 
     bool found = false;
@@ -120,11 +125,11 @@ static void read_gbptrees(const std::string fname_in, const std::string grid_nam
         
         if (grid_name == ident) {
             fmt::print("Reading grid {}...\n", ident);
-            ifs.read((char*)orig.get(), sizeof(float)*n_logical);
+            ifs.read((char*)orig.get(), sizeof(float)*orig.n_logical);
             found = true;
         } else {
             fmt::print("Skipping grid {}...\n", ident);
-            ifs.seekg(sizeof(float)*n_logical, std::ifstream::cur);
+            ifs.seekg(sizeof(float)*orig.n_logical, std::ifstream::cur);
         }
 
     }
@@ -143,6 +148,23 @@ static void read_gbptrees(const std::string fname_in, const std::string grid_nam
     }
 
     orig.real_to_padded_order();
+
+    fftwf_plan_with_nthreads(omp_get_max_threads());
+    auto plan = fftwf_plan_dft_r2c_3d(n_cell[0], n_cell[1], n_cell[2], orig.get(), orig.get_complex(), FFTW_ESTIMATE);
+    fftwf_execute(plan);
+    fftwf_destroy_plan(plan);
+
+    // Remember to add the factor of VOLUME/TOT_NUM_PIXELS when converting from
+    // real space to k-space.
+    // Note: we will leave off factor of VOLUME, in anticipation of the inverse
+    // FFT below
+    for (int ii = 0; ii < orig.n_complex; ++ii)
+        orig.get_complex()[ii][0] /= orig.n_logical;
+
+    // filter(slab,
+            // (int)slab_ix_start,
+            // (int)slab_nix, n_cell[0],
+            // (float)(run_globals.params.BoxSize / (double)run_globals.params.ReionGridDim / 2.0));
 
     fmt::print("...done\n");
 }
@@ -166,9 +188,13 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    fftwf_init_threads();
+
     if (vm.count("gbptrees")) {
         read_gbptrees(vm["gbptrees"].as<std::string>(), vm["name"].as<std::string>());
     }
+
+    fftwf_cleanup_threads();
 
     return 0;
 }

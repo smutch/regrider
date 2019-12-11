@@ -12,7 +12,7 @@ TODO
 ----
 
 - [X] Malloc orig using FFTW (with inplace padding)
-- [ ] Do an inplace FFT
+- [X] Do an inplace FFT
 - [ ] Convolution
 - [ ] Inverse FFTW
 - [ ] Reshuffle data inplace
