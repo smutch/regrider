@@ -21,6 +21,7 @@
 #include <fftw3.h>
 #include <cassert>
 #include <omp.h>
+#include <iostream>
 
 #include "grid.hpp"
 
@@ -42,19 +43,19 @@ std::complex<float>* Grid::get_complex()
     return (std::complex<float>*)grid.get();
 }
 
-constexpr int Grid::index(int i, int j, int k, index_type type)
+constexpr int Grid::index(int i, int j, int k, index_type type, std::array<int, 3>shape)
 {
-    auto index = k + n_cell[1] * (j + n_cell[0] * i);
+    auto index = k + shape[1] * (j + shape[0] * i);
     assert(index < n_logical);
 
     switch (type) {
     case padded:
-        index = k + (2 * (n_cell[1] / 2 + 1)) * (j + n_cell[0] * i);
+        index = k + (2 * (shape[1] / 2 + 1)) * (j + shape[0] * i);
         break;
     case real:
         break;
     case complex_herm:
-        index = k + (n_cell[1] / 2 + 1) * (j + n_cell[0] * i);
+        index = k + (shape[1] / 2 + 1) * (j + shape[0] * i);
         break;
     default:
         fmt::print(stderr, "Unrecognised index_type!\n");
@@ -62,6 +63,11 @@ constexpr int Grid::index(int i, int j, int k, index_type type)
     }
 
     return index;
+}
+
+constexpr int Grid::index(int i, int j, int k, index_type type)
+{
+    return Grid::index(i, j, k, type, n_cell);
 }
 
 void Grid::real_to_padded_order()
@@ -121,6 +127,12 @@ void Grid::reverse_fft(int n_threads)
 void Grid::filter(filter_type type, const float R)
 {
 
+    fmt::print("Filtering grid... ");
+    std::cout << std::flush;
+
+    fmt::print("doing forward fft... ");
+    std::cout << std::flush;
+
     forward_fft();
 
     const int middle = n_cell[2] / 2;
@@ -131,6 +143,12 @@ void Grid::filter(filter_type type, const float R)
     }
 
     // Loop through k-box
+    fmt::print("applying convolution... ");
+    std::cout << std::flush;
+
+    auto complex_grid = get_complex();
+
+#pragma omp parallel for default(none) private(delta_k) shared(complex_grid, stderr, type)
     for (int n_x = 0; n_x < n_cell[0]; ++n_x) {
         double k_x = 0;
 
@@ -157,20 +175,20 @@ void Grid::filter(filter_type type, const float R)
                 switch (type) {
                 case real_top_hat: // Real space top-hat
                     if (kR > 1e-4) {
-                        get_complex()[index(n_x, n_y, n_z, complex_herm)] *= 3.0 * (sin(kR) / pow(kR, 3) - cos(kR) / pow(kR, 2));
+                        complex_grid[index(n_x, n_y, n_z, complex_herm)] *= 3.0 * (sin(kR) / pow(kR, 3) - cos(kR) / pow(kR, 2));
                     }
                     break;
 
                 case k_top_hat: // k-space top hat
                     kR *= 0.413566994; // Equates integrated volume to the real space top-hat (9pi/2)^(-1/3)
                     if (kR > 1) {
-                        get_complex()[index(n_x, n_y, n_z, complex_herm)] = 0.0;
+                        complex_grid[index(n_x, n_y, n_z, complex_herm)] = 0.0;
                     }
                     break;
 
                 case gaussian: // Gaussian
                     kR *= 0.643; // Equates integrated volume to the real space top-hat
-                    get_complex()[index(n_x, n_y, n_z, complex_herm)] *= pow(M_E, -kR * kR / 2.0);
+                    complex_grid[index(n_x, n_y, n_z, complex_herm)] *= pow(M_E, -kR * kR / 2.0);
                     break;
 
                 default:
@@ -183,16 +201,32 @@ void Grid::filter(filter_type type, const float R)
         }
     } // End looping through k box
 
+    fmt::print("doing inverse fft... ");
+    std::cout << std::flush;
+
     reverse_fft();
+
+    fmt::print("done\n");
 }
 
 void Grid::sample(const std::array<int, 3> new_n_cell)
 {
+    fmt::print("Subsampling grid... ");
 
     std::array<int, 3> n_every = { 0 };
     for (int ii = 0; ii < 3; ++ii) {
         n_every[ii] = n_cell[ii] / new_n_cell[ii];
     }
 
-    // TODO cont here...
+    auto grid_ = grid.get();
+
+    // TODO: I need to check to make sure this is valid
+    for(int ii = 0, ii_lo = 0; ii < n_cell[0]; ii += n_every[0], ++ii_lo) {
+        for(int jj = 0, jj_lo = 0; jj < n_cell[1]; jj += n_every[1], ++jj_lo) {
+            for(int kk = 0, kk_lo = 0; kk < n_cell[2]; kk += n_every[2], ++kk_lo) {
+                grid_[index(ii_lo, jj_lo, kk_lo, real, new_n_cell)] = grid_[index(ii, jj, kk, real)];
+            }
+        }
+    }
+    fmt::print("done\n");
 }

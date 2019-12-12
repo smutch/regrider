@@ -49,6 +49,7 @@ public:
 
     float* get();
     std::complex<float>* get_complex();
+    constexpr int index(int i, int j, int k, index_type type, std::array<int, 3>shape);
     constexpr int index(int i, int j, int k, index_type type);
     void real_to_padded_order();
     void padded_to_real_order();

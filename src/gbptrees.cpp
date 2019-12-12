@@ -56,16 +56,18 @@ void read_gbptrees(const std::string fname_in, const std::string grid_name)
         ident.resize(strlen(ident.c_str()));
 
         if (grid_name == ident) {
-            fmt::print("Reading grid {}...\n", ident);
+            fmt::print("Reading grid {}... ", ident);
             ifs.read((char*)orig.get(), sizeof(float) * orig.n_logical);
             found = true;
         } else {
-            fmt::print("Skipping grid {}...\n", ident);
+            fmt::print("Skipping grid {}... ", ident);
             ifs.seekg(sizeof(float) * orig.n_logical, std::ifstream::cur);
         }
     }
 
     ifs.close();
+
+    fmt::print("done\n");
 
     if (!found) {
         fmt::print(stderr, "Failed to find grid named `{}' in file!\n", grid_name);
@@ -78,7 +80,8 @@ void read_gbptrees(const std::string fname_in, const std::string grid_name)
         fmt::print("First 10 elements = {}\n", fmt::join(subset, ","));
     }
 
-    orig.forward_fft();
+    orig.filter(Grid::real_top_hat, 4.0);
+    orig.sample({128, 128, 128});
 
     // filter(slab,
     // (int)slab_ix_start,
