@@ -14,7 +14,9 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native")
 set(CMAKE_CXX_FLAGS_DEBUG "-O1 -g -fsanitize=address,undefined,leak -fno-omit-frame-pointer")
 
 set(SRC
-    src/regrider.cpp
+    src/main.cpp
+    src/grid.cpp
+    src/gbptrees.cpp
     )
 
 add_executable(regrider ${SRC})
