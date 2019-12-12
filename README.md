@@ -13,8 +13,8 @@ TODO
 
 - [X] Malloc orig using FFTW (with inplace padding)
 - [X] Do an inplace FFT
-- [ ] Convolution
-- [ ] Inverse FFTW
+- [X] Convolution
+- [X] Inverse FFTW
 - [ ] Reshuffle data inplace
 - [ ] Write the data back out
 - [ ] Get rid of choice of grid and convert all grids
