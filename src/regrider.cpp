@@ -24,6 +24,7 @@
 #include <vector>
 #include <array>
 #include <cstring>
+#include <complex>
 #include <fftw3.h>
 #include <omp.h>
 
@@ -31,12 +32,15 @@
 class Grid {
     public:
     std::array<int32_t, 3> n_cell;
+    std::array<double, 3> box_size;
     int n_logical;
     int n_padded;
     int n_complex;
+    bool flag_padded = false;
 
-    Grid(std::array<int32_t, 3>n_cell_) :
+    Grid(const std::array<int32_t, 3>n_cell_, const std::array<double, 3>box_size_) :
         n_cell{n_cell_},
+        box_size{box_size_},
         n_logical{n_cell[0] * n_cell[1] * n_cell[2]},
         n_padded{n_cell[0] * n_cell[1] * 2*(n_cell[2]/2+1)}, 
         n_complex{n_cell[0] * n_cell[1] * (n_cell[2]/2+1)},
@@ -47,13 +51,14 @@ class Grid {
         return grid.get();
     }
 
-    fftwf_complex* get_complex() {
-        return (fftwf_complex*)grid.get();
+    std::complex<float>* get_complex() {
+        return (std::complex<float>*)grid.get();
     }
 
     enum index_type {
         padded,
-        real
+        real,
+        complex_herm
     };
 
     constexpr int index(int i, int j, int k, index_type type) {
@@ -65,6 +70,9 @@ class Grid {
                 index = k + (2 * (n_cell[1] / 2 + 1)) * (j + n_cell[0] * i);
                 break;
             case real:
+                break;
+            case complex_herm:
+                index = k + (n_cell[1] / 2 + 1) * (j + n_cell[0] * i);
                 break;
             default:
                 fmt::print(stderr, "Unrecognised index_type!\n");
@@ -79,6 +87,7 @@ class Grid {
             for (int32_t jj = n_cell[1] - 1; jj >= 0; --jj)
                 for (int32_t kk = n_cell[2] - 1; kk >= 0; --kk)
                     grid.get()[index(ii, jj, kk, index_type::padded)] = grid.get()[index(ii, jj, kk, index_type::real)];
+        flag_padded = true;
     }
 
     void padded_to_real_order() {
@@ -86,6 +95,97 @@ class Grid {
             for (int32_t jj = n_cell[1] - 1; jj >= 0; --jj)
                 for (int32_t kk = n_cell[2] - 1; kk >= 0; --kk)
                     grid.get()[index(ii, jj, kk, index_type::real)] = grid.get()[index(ii, jj, kk, index_type::padded)];
+        flag_padded = false;
+    }
+
+    void forward_fft(int n_threads = -1) {
+        if (n_threads == -1) {
+            n_threads = omp_get_max_threads();
+        }
+
+        if (!flag_padded) {
+            real_to_padded_order();
+        }
+
+        fftwf_plan_with_nthreads(n_threads);
+        auto plan = fftwf_plan_dft_r2c_3d(n_cell[0], n_cell[1], n_cell[2], get(), (fftwf_complex*)get_complex(), FFTW_ESTIMATE);
+        fftwf_execute(plan);
+        fftwf_destroy_plan(plan);
+
+        // Remember to multiply by VOLUME/TOT_NUM_PIXELS when converting from
+        // real space to k-space.  Note: we will leave off factor of VOLUME, in
+        // anticipation of the inverse FFT
+        for (int ii = 0; ii < n_complex; ++ii)
+            get_complex()[ii] /= n_logical;
+    }
+
+    enum filter_type {
+        real_top_hat,
+        k_top_hat,
+        gaussian
+    };
+
+    void filter(filter_type type, const float R) {
+
+        const int middle = n_cell[2] / 2;
+        std::array<double, 3> delta_k = {0};
+
+        for (int ii=0, ii<3; ++ii) {
+            delta_k[ii] = (2.0 * M_PI / box_size[ii]);
+        }
+
+        // Loop through k-box
+        for (int n_x = 0; n_x < n_cell[0]; ++n_x) {
+            double k_x = 0;
+
+            if (n_x > middle)
+                k_x = (n_x - n_cell[0]) * delta_k[0];
+            else
+                k_x = n_x * delta_k[0];
+
+            for (int n_y = 0; n_y < n_cell[1]; ++n_y) {
+                double k_y = 0;
+
+                if (n_y > middle)
+                    k_y = (n_y - n_cell[1]) * delta_k[1];
+                else
+                    k_y = n_y * delta_k[1];
+
+                for (int n_z = 0; n_z <= middle; ++n_z) {
+                    double k_z = n_z * delta_k[2];
+
+                    double k_mag = sqrt(k_x * k_x + k_y * k_y + k_z * k_z);
+
+                    double kR = k_mag * R;
+
+                    switch (type) {
+                        case real_top_hat: // Real space top-hat
+                            if (kR > 1e-4) {
+                                get_complex()[index(n_x, n_y, n_z, complex_herm)] *= 3.0 * (sin(kR) / pow(kR, 3) - cos(kR) / pow(kR, 2));
+                            }
+                            break;
+
+                        case k_top_hat: // k-space top hat
+                            kR *= 0.413566994; // Equates integrated volume to the real space top-hat (9pi/2)^(-1/3)
+                            if (kR > 1) {
+                                get_complex()[index(n_x, n_y, n_z, complex_herm)] = 0.0;
+                            }
+                            break;
+
+                        case gaussian: // Gaussian
+                            kR *= 0.643; // Equates integrated volume to the real space top-hat
+                            get_complex()[index(n_x, n_y, n_z, complex_herm)] *= pow(M_E, -kR * kR / 2.0);
+                            break;
+
+                        default:
+                            if ((n_x == 0) && (n_y == 0) && (n_z == 0)) {
+                                fmt::print(stderr, "Error: filter type {} is undefined!", type);
+                            }
+                            break;
+                    }
+                }
+            }
+        } // End looping through k box
     }
 
     private:
@@ -114,7 +214,7 @@ static void read_gbptrees(const std::string fname_in, const std::string grid_nam
     ifs.read((char*)(&ma_scheme), sizeof(int));
     fmt::print("ma_scheme = {}\n", ma_scheme);
 
-    auto orig = Grid(n_cell);
+    auto orig = Grid(n_cell, box_size);
 
     bool found = false;
     for(int32_t ii=0; ii<n_grids && !found; ++ii){
@@ -147,19 +247,7 @@ static void read_gbptrees(const std::string fname_in, const std::string grid_nam
         fmt::print("First 10 elements = {}\n", fmt::join(subset, ","));
     }
 
-    orig.real_to_padded_order();
-
-    fftwf_plan_with_nthreads(omp_get_max_threads());
-    auto plan = fftwf_plan_dft_r2c_3d(n_cell[0], n_cell[1], n_cell[2], orig.get(), orig.get_complex(), FFTW_ESTIMATE);
-    fftwf_execute(plan);
-    fftwf_destroy_plan(plan);
-
-    // Remember to add the factor of VOLUME/TOT_NUM_PIXELS when converting from
-    // real space to k-space.
-    // Note: we will leave off factor of VOLUME, in anticipation of the inverse
-    // FFT below
-    for (int ii = 0; ii < orig.n_complex; ++ii)
-        orig.get_complex()[ii][0] /= orig.n_logical;
+    orig.forward_fft();
 
     // filter(slab,
             // (int)slab_ix_start,
