@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
     cxxopts::Options options(
         "regrider", "Downsample gbpTrees and VELOCIraptor trees using FFTW");
 
-    options.add_options()("d,dim", "new grid dimension", cxxopts::value<uint32_t>())("n,name", "grid name (must match conventions), ", cxxopts::value<std::string>())("g,gbptrees", "input gbpTrees grid file", cxxopts::value<std::string>())("v,velociraptor", "input VELOCIraptor grid file", cxxopts::value<std::string>());
+    options.add_options()("d,dim", "new grid dimension", cxxopts::value<int>())("g,gbptrees", "input gbpTrees grid file", cxxopts::value<std::string>())("v,velociraptor", "input VELOCIraptor grid file", cxxopts::value<std::string>())("o,output", "output file name", cxxopts::value<std::string>());
 
     auto vm = options.parse(argc, argv);
 
@@ -39,16 +39,9 @@ int main(int argc, char* argv[])
 
     fftwf_init_threads();
 
-    Grid grid;
-
     if (vm.count("gbptrees")) {
-        read_gbptrees(vm["gbptrees"].as<std::string>(), vm["name"].as<std::string>(), grid);
+        regrid_gbptrees(vm["gbptrees"].as<std::string>(), vm["output"].as<std::string>(), vm["dim"].as<int>());
     }
-
-    std::array<int32_t, 3> new_n_cell = {128, 128, 128};
-    double radius = grid.n_cell[0] / new_n_cell[0];
-    grid.filter(Grid::filter_type::real_top_hat, radius);
-    grid.sample(new_n_cell);
 
     fftwf_cleanup_threads();
 

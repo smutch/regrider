@@ -26,8 +26,6 @@
 
 #include "grid.hpp"
 
-Grid::Grid() : grid(nullptr, nullptr) {};
-
 Grid::Grid(const std::array<int32_t, 3> n_cell_, const std::array<double, 3> box_size_)
     : n_cell { n_cell_ }
     , box_size { box_size_ }
@@ -36,13 +34,11 @@ Grid::Grid(const std::array<int32_t, 3> n_cell_, const std::array<double, 3> box
     , n_complex { n_cell[0] * n_cell[1] * (n_cell[2] / 2 + 1) }
     , grid(fftwf_alloc_real(n_padded), [](float* grid) { fftwf_free(grid); }) {};
 
-void Grid::init(const std::array<int32_t, 3> n_cell_, const std::array<double, 3> box_size_) {
+void Grid::update_properties(const std::array<int32_t, 3> n_cell_) {
     n_cell = n_cell_;
-    box_size = box_size_;
     n_logical = n_cell[0] * n_cell[1] * n_cell[2];
-    n_padded =  n_cell[0] * n_cell[1] * 2 * (n_cell[2] / 2 + 1);
+    n_padded = n_cell[0] * n_cell[1] * 2 * (n_cell[2] / 2 + 1);
     n_complex = n_cell[0] * n_cell[1] * (n_cell[2] / 2 + 1);
-    grid = std::unique_ptr<float, void(*)(float*)>(fftwf_alloc_real(n_padded), [](float* grid) { fftwf_free(grid); });
 }
 
 float* Grid::get()
@@ -244,5 +240,8 @@ void Grid::sample(const std::array<int, 3> new_n_cell)
             }
         }
     }
+
+    update_properties(new_n_cell);
+
     fmt::print("done\n");
 }

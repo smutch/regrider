@@ -22,6 +22,6 @@
 #include <string>
 #include "grid.hpp"
 
-void read_gbptrees(const std::string fname_in, const std::string grid_name, Grid& grid);
+void regrid_gbptrees(const std::string fname_in, const std::string fname_out, const int new_dim);
 
 #endif

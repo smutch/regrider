@@ -48,10 +48,9 @@ public:
         gaussian
     };
 
-    Grid();
     Grid(const std::array<int32_t, 3> n_cell_, const std::array<double, 3> box_size_);
 
-    void init(const std::array<int32_t, 3> n_cell_, const std::array<double, 3> box_size_);
+    void update_properties(const std::array<int32_t, 3> n_cell_);
     float* get();
     std::complex<float>* get_complex();
     constexpr int index(int i, int j, int k, index_type type, std::array<int, 3>shape);
