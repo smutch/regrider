@@ -16,6 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <string>
+#ifndef GBPTREES_H
+#define GBPTREES_H
 
-void read_gbptrees(const std::string fname_in, const std::string grid_name);
+#include <string>
+#include "grid.hpp"
+
+void read_gbptrees(const std::string fname_in, const std::string grid_name, Grid& grid);
+
+#endif

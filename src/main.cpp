@@ -39,9 +39,16 @@ int main(int argc, char* argv[])
 
     fftwf_init_threads();
 
+    Grid grid;
+
     if (vm.count("gbptrees")) {
-        read_gbptrees(vm["gbptrees"].as<std::string>(), vm["name"].as<std::string>());
+        read_gbptrees(vm["gbptrees"].as<std::string>(), vm["name"].as<std::string>(), grid);
     }
+
+    std::array<int32_t, 3> new_n_cell = {128, 128, 128};
+    double radius = grid.n_cell[0] / new_n_cell[0];
+    grid.filter(Grid::filter_type::real_top_hat, radius);
+    grid.sample(new_n_cell);
 
     fftwf_cleanup_threads();
 

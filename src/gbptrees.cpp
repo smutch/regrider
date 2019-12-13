@@ -23,9 +23,8 @@
 #include <fstream>
 
 #include "gbptrees.hpp"
-#include "grid.hpp"
 
-void read_gbptrees(const std::string fname_in, const std::string grid_name)
+void read_gbptrees(const std::string fname_in, const std::string grid_name, Grid& grid)
 {
     fmt::print("Reading gbpTrees grid file {}...\n", fname_in);
     std::ifstream ifs(fname_in, std::ios::binary | std::ios::in);
@@ -46,7 +45,7 @@ void read_gbptrees(const std::string fname_in, const std::string grid_name)
     ifs.read((char*)(&ma_scheme), sizeof(int));
     fmt::print("ma_scheme = {}\n", ma_scheme);
 
-    auto orig = Grid(n_cell, box_size);
+    grid.init(n_cell, box_size);
 
     bool found = false;
     for (int ii = 0; ii < n_grids && !found; ++ii) {
@@ -57,11 +56,11 @@ void read_gbptrees(const std::string fname_in, const std::string grid_name)
 
         if (grid_name == ident) {
             fmt::print("Reading grid {}... ", ident);
-            ifs.read((char*)orig.get(), sizeof(float) * orig.n_logical);
+            ifs.read((char*)grid.get(), sizeof(float) * grid.n_logical);
             found = true;
         } else {
             fmt::print("Skipping grid {}... ", ident);
-            ifs.seekg(sizeof(float) * orig.n_logical, std::ifstream::cur);
+            ifs.seekg(sizeof(float) * grid.n_logical, std::ifstream::cur);
         }
     }
 
@@ -71,17 +70,14 @@ void read_gbptrees(const std::string fname_in, const std::string grid_name)
 
     if (!found) {
         fmt::print(stderr, "Failed to find grid named `{}' in file!\n", grid_name);
-        return;
+        exit(EXIT_FAILURE);
     }
 
     // DEBUG
     {
-        std::vector subset(orig.get(), orig.get() + 10);
+        std::vector subset(grid.get(), grid.get() + 10);
         fmt::print("First 10 elements = {}\n", fmt::join(subset, ","));
     }
-
-    orig.filter(Grid::filter_type::real_top_hat, 4.0);
-    orig.sample({128, 128, 128});
 
     // filter(slab,
     // (int)slab_ix_start,

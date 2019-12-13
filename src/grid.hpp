@@ -16,6 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef GRID_H
+#define GRID_H
+
 #include <array>
 #include <memory>
 #include <complex>
@@ -45,8 +48,10 @@ public:
         gaussian
     };
 
+    Grid();
     Grid(const std::array<int32_t, 3> n_cell_, const std::array<double, 3> box_size_);
 
+    void init(const std::array<int32_t, 3> n_cell_, const std::array<double, 3> box_size_);
     float* get();
     std::complex<float>* get_complex();
     constexpr int index(int i, int j, int k, index_type type, std::array<int, 3>shape);
@@ -58,3 +63,5 @@ public:
     void filter(filter_type type, const float R);
     void sample(const std::array<int, 3> new_n_cell);
 };
+
+#endif
