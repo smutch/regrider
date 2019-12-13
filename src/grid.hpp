@@ -33,13 +33,13 @@ private:
     std::unique_ptr<float, void (*)(float*)> grid;
 
 public:
-    enum index_type {
+    enum class index_type {
         padded,
         real,
         complex_herm
     };
 
-    enum filter_type {
+    enum class filter_type {
         real_top_hat,
         k_top_hat,
         gaussian

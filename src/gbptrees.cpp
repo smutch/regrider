@@ -80,7 +80,7 @@ void read_gbptrees(const std::string fname_in, const std::string grid_name)
         fmt::print("First 10 elements = {}\n", fmt::join(subset, ","));
     }
 
-    orig.filter(Grid::real_top_hat, 4.0);
+    orig.filter(Grid::filter_type::real_top_hat, 4.0);
     orig.sample({128, 128, 128});
 
     // filter(slab,

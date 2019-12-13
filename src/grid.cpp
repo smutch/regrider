@@ -22,6 +22,7 @@
 #include <cassert>
 #include <omp.h>
 #include <iostream>
+#include <vector>
 
 #include "grid.hpp"
 
@@ -49,12 +50,12 @@ constexpr int Grid::index(int i, int j, int k, index_type type, std::array<int, 
     assert(index < n_logical);
 
     switch (type) {
-    case padded:
+    case index_type::padded:
         index = k + (2 * (shape[1] / 2 + 1)) * (j + shape[0] * i);
         break;
-    case real:
+    case index_type::real:
         break;
-    case complex_herm:
+    case index_type::complex_herm:
         index = k + (shape[1] / 2 + 1) * (j + shape[0] * i);
         break;
     default:
@@ -72,19 +73,21 @@ constexpr int Grid::index(int i, int j, int k, index_type type)
 
 void Grid::real_to_padded_order()
 {
+    auto grid_ = grid.get();
     for (int ii = n_cell[0] - 1; ii >= 0; --ii)
         for (int jj = n_cell[1] - 1; jj >= 0; --jj)
             for (int kk = n_cell[2] - 1; kk >= 0; --kk)
-                grid.get()[index(ii, jj, kk, index_type::padded)] = grid.get()[index(ii, jj, kk, index_type::real)];
+                grid_[index(ii, jj, kk, index_type::padded)] = grid_[index(ii, jj, kk, index_type::real)];
     flag_padded = true;
 }
 
 void Grid::padded_to_real_order()
 {
+    auto grid_ = get();
     for (int ii = n_cell[0] - 1; ii >= 0; --ii)
         for (int jj = n_cell[1] - 1; jj >= 0; --jj)
             for (int kk = n_cell[2] - 1; kk >= 0; --kk)
-                grid.get()[index(ii, jj, kk, index_type::real)] = grid.get()[index(ii, jj, kk, index_type::padded)];
+                grid_[index(ii, jj, kk, index_type::real)] = grid_[index(ii, jj, kk, index_type::padded)];
     flag_padded = false;
 }
 
@@ -106,8 +109,10 @@ void Grid::forward_fft(int n_threads)
     // Remember to multiply by VOLUME/TOT_NUM_PIXELS when converting from
     // real space to k-space.  Note: we will leave off factor of VOLUME, in
     // anticipation of the inverse FFT
+    auto complex_grid = get();
+#pragma omp parallel for default(none) private(n_logical) shared(complex_grid)
     for (int ii = 0; ii < n_complex; ++ii)
-        get_complex()[ii] /= n_logical;
+        complex_grid[ii] /= n_logical;
 }
 
 void Grid::reverse_fft(int n_threads)
@@ -127,7 +132,7 @@ void Grid::reverse_fft(int n_threads)
 void Grid::filter(filter_type type, const float R)
 {
 
-    fmt::print("Filtering grid... ");
+    fmt::print("Filtering grid: ");
     std::cout << std::flush;
 
     fmt::print("doing forward fft... ");
@@ -173,27 +178,27 @@ void Grid::filter(filter_type type, const float R)
                 double kR = k_mag * R;
 
                 switch (type) {
-                case real_top_hat: // Real space top-hat
+                case filter_type::real_top_hat: // Real space top-hat
                     if (kR > 1e-4) {
-                        complex_grid[index(n_x, n_y, n_z, complex_herm)] *= 3.0 * (sin(kR) / pow(kR, 3) - cos(kR) / pow(kR, 2));
+                        complex_grid[index(n_x, n_y, n_z, index_type::complex_herm)] *= 3.0 * (sin(kR) / pow(kR, 3) - cos(kR) / pow(kR, 2));
                     }
                     break;
 
-                case k_top_hat: // k-space top hat
+                case filter_type::k_top_hat: // k-space top hat
                     kR *= 0.413566994; // Equates integrated volume to the real space top-hat (9pi/2)^(-1/3)
                     if (kR > 1) {
-                        complex_grid[index(n_x, n_y, n_z, complex_herm)] = 0.0;
+                        complex_grid[index(n_x, n_y, n_z, index_type::complex_herm)] = 0.0;
                     }
                     break;
 
-                case gaussian: // Gaussian
+                case filter_type::gaussian: // Gaussian
                     kR *= 0.643; // Equates integrated volume to the real space top-hat
-                    complex_grid[index(n_x, n_y, n_z, complex_herm)] *= pow(M_E, -kR * kR / 2.0);
+                    complex_grid[index(n_x, n_y, n_z, index_type::complex_herm)] *= pow(M_E, -kR * kR / 2.0);
                     break;
 
                 default:
                     if ((n_x == 0) && (n_y == 0) && (n_z == 0)) {
-                        fmt::print(stderr, "Error: filter type {} is undefined!", type);
+                        fmt::print(stderr, "Error: filter type {} is undefined!", (int)type);
                     }
                     break;
                 }
@@ -224,7 +229,7 @@ void Grid::sample(const std::array<int, 3> new_n_cell)
     for(int ii = 0, ii_lo = 0; ii < n_cell[0]; ii += n_every[0], ++ii_lo) {
         for(int jj = 0, jj_lo = 0; jj < n_cell[1]; jj += n_every[1], ++jj_lo) {
             for(int kk = 0, kk_lo = 0; kk < n_cell[2]; kk += n_every[2], ++kk_lo) {
-                grid_[index(ii_lo, jj_lo, kk_lo, real, new_n_cell)] = grid_[index(ii, jj, kk, real)];
+                grid_[index(ii_lo, jj_lo, kk_lo, index_type::real, new_n_cell)] = grid_[index(ii, jj, kk, index_type::real)];
             }
         }
     }
