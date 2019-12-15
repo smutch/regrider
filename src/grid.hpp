@@ -70,15 +70,71 @@ public:
      * @param n_cell_ The new number of @logical cells in each dimension
      */
     void update_properties(const std::array<int32_t, 3> n_cell_);
+
+    /** Return the pointer to the grid data.
+     *
+     * @return Float pointer to the grid data.
+     */
     float* get();
+
+    /** Return the pointer to the grid data, cast as a complex array.
+     *
+     * @return Complex pointer to the grid data
+     */
     std::complex<float>* get_complex();
+
+    /** Indexing function for arbitrary grid of any 3D size.
+     *
+     * @param i Index in 1st dimension
+     * @param j Index in second dimension
+     * @param k Index in third dimension
+     * @param shape Shape of the 3D array
+     * @return The index
+     */
     constexpr int index(int i, int j, int k, index_type type, std::array<int, 3>shape);
+    
+    /** Indexing function for the current grid.
+     *
+     * @param i Index in 1st dimension
+     * @param j Index in second dimension
+     * @param k Index in third dimension
+     * @return The index
+     */
     constexpr int index(int i, int j, int k, index_type type);
+
+    /** Convert the grid from logical memory ordering to padded ordering.
+     */
     void real_to_padded_order();
+
+    /** Convert the grid from padded memory ordering to logical ordering.
+     */
     void padded_to_real_order();
+
+    /** Do the forward FFT
+     *
+     * @param n_threads The number of openmp threads ot use for the transform. -1 --> all available (default).
+     */
     void forward_fft(int n_threads = -1);
+
+    /** Do the reverse FFT
+     *
+     * @param n_threads The number of openmp threads ot use for the transform. -1 --> all available (default).
+     */
     void reverse_fft(int n_threads = -1);
+
+    /** Filter the grid using a given filter type and size.
+     *
+     * @param type The filter type to use
+     * @param R the size (typically radius) of the filter
+     */
     void filter(filter_type type, const float R);
+
+    /** Subsample the grid to provide a new one with the requested dimensions.
+     *
+     * Note that the parameters of the Grid object will be updated correspondingly.
+     *
+     * @param new_n_cell The new logical size of the grid.
+     */
     void sample(const std::array<int, 3> new_n_cell);
 };
 
