@@ -80,7 +80,7 @@ constexpr int Grid::index(int i, int j, int k, index_type type)
 
 void Grid::real_to_padded_order()
 {
-    auto grid_ = grid.get();
+    auto grid_ = get();
     for (int ii = n_cell[0] - 1; ii >= 0; --ii)
         for (int jj = n_cell[1] - 1; jj >= 0; --jj)
             for (int kk = n_cell[2] - 1; kk >= 0; --kk)
@@ -109,17 +109,17 @@ void Grid::forward_fft(int n_threads)
     }
 
     fftwf_plan_with_nthreads(n_threads);
-    auto plan = fftwf_plan_dft_r2c_3d(n_cell[0], n_cell[1], n_cell[2], get(), (fftwf_complex*)get_complex(), FFTW_ESTIMATE);
+    auto plan = fftwf_plan_dft_r2c_3d(n_cell[0], n_cell[1], n_cell[2], (float*)get(), (fftwf_complex*)get(), FFTW_ESTIMATE);
     fftwf_execute(plan);
     fftwf_destroy_plan(plan);
 
     // Remember to multiply by VOLUME/TOT_NUM_PIXELS when converting from
     // real space to k-space.  Note: we will leave off factor of VOLUME, in
     // anticipation of the inverse FFT
-    auto complex_grid = get();
-#pragma omp parallel for default(none) private(n_logical) shared(complex_grid)
+    auto complex_grid = get_complex();
+#pragma omp parallel for default(none) firstprivate(n_logical) shared(complex_grid)
     for (int ii = 0; ii < n_complex; ++ii)
-        complex_grid[ii] /= n_logical;
+        complex_grid[ii] /= (float)n_logical;
 }
 
 void Grid::reverse_fft(int n_threads)
@@ -129,7 +129,7 @@ void Grid::reverse_fft(int n_threads)
     }
 
     fftwf_plan_with_nthreads(n_threads);
-    auto plan = fftwf_plan_dft_c2r_3d(n_cell[0], n_cell[1], n_cell[2], (fftwf_complex*)get_complex(), get(), FFTW_ESTIMATE);
+    auto plan = fftwf_plan_dft_c2r_3d(n_cell[0], n_cell[1], n_cell[2], (fftwf_complex*)get(), (float*)get(), FFTW_ESTIMATE);
     fftwf_execute(plan);
     fftwf_destroy_plan(plan);
 
@@ -160,7 +160,7 @@ void Grid::filter(filter_type type, const float R)
 
     auto complex_grid = get_complex();
 
-#pragma omp parallel for default(none) private(delta_k) shared(complex_grid, stderr, type)
+#pragma omp parallel for default(none) firstprivate(delta_k) shared(complex_grid, stderr, type)
     for (int n_x = 0; n_x < n_cell[0]; ++n_x) {
         double k_x = 0;
 

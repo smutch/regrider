@@ -23,33 +23,52 @@
 #include <memory>
 #include <complex>
 
+/** A 3D grid class to handle input independent functionality.
+ */
 class Grid {
 public:
-    std::array<int32_t, 3> n_cell;
-    std::array<double, 3> box_size;
-    int n_logical;
-    int n_padded;
-    int n_complex;
-    bool flag_padded = false;
+    std::array<int32_t, 3> n_cell;  /** The number of cells in each dimension */
+    std::array<double, 3> box_size;  /** The box size in input units (typically h^-1 Mpc) */
+    int n_logical;  /** The total number of cells */
+    int n_padded;  /** Number of elements in the padded array */
+    int n_complex;  /** The number of complex elements in the FFTd array */
+    bool flag_padded = false;  /** Has the indexing been reorder to be padded for an inplace FFT? */
 
 private:
-    std::unique_ptr<float, void (*)(float*)> grid;
+    std::unique_ptr<float, void (*)(float*)> grid;  /** A pointer to the grid data, allowing it to be
+                                                      automatically freed when this Grid object goes out
+                                                      of scope. */
 
 public:
+    /** The indexing type required for an ::index function call.
+     */
     enum class index_type {
         padded,
         real,
         complex_herm
     };
 
+    /** The type of filter to be applied to the grid to smooth it.
+     */
     enum class filter_type {
         real_top_hat,
         k_top_hat,
         gaussian
     };
 
+    /** Basic constructor.
+     * This will allocate the grid array, and store the corresponding size in various forms.
+     *
+     * @param n_cell_ The number of @logical cells in each dimension
+     * @param box_size_ The size of the simulation volume in input units
+     */
     Grid(const std::array<int32_t, 3> n_cell_, const std::array<double, 3> box_size_);
 
+    /** Update the "size" of the grid for a new logical size.
+     * Note that this does not alter the size of the memory allocation, just what this allocation represents.
+     *
+     * @param n_cell_ The new number of @logical cells in each dimension
+     */
     void update_properties(const std::array<int32_t, 3> n_cell_);
     float* get();
     std::complex<float>* get_complex();

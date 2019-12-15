@@ -78,6 +78,13 @@ void regrid_gbptrees(const std::string fname_in, const std::string fname_out, co
         }
 
         grid.filter(Grid::filter_type::real_top_hat, radius);
+
+        // DEBUG
+        {
+            std::vector subset(grid.get(), grid.get() + 10);
+            fmt::print("First 10 elements = {}\n", fmt::join(subset, ","));
+        }
+
         grid.sample(new_n_cell);
         
         // DEBUG
