@@ -22,6 +22,12 @@
 #include <string>
 #include "grid.hpp"
 
+/** Regrid a gbptrees file.
+ *
+ * @param fname_in The path to the input file to be regridded
+ * @param fname_out The path to the new output file to be created
+ * @param new_dim The new size of the grid (assuming cubic dimensions)
+ */
 void regrid_gbptrees(const std::string fname_in, const std::string fname_out, const int new_dim);
 
 #endif
