@@ -15,8 +15,10 @@ TODO
 - [X] Do an inplace FFT
 - [X] Convolution
 - [X] Inverse FFTW
-- [ ] Reshuffle data inplace
-- [ ] Write the data back out
-- [ ] Get rid of choice of grid and convert all grids
+- [X] Reshuffle data inplace
+- [X] Write the data back out
+- [X] Get rid of choice of grid and convert all grids
+- [ ] Documentation
+- [ ] Tests
 - [ ] Do an implementation for VELOCIraptor
 
