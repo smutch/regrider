@@ -28,9 +28,13 @@ int main(int argc, char* argv[])
     cxxopts::Options options(
         "regrider", "Downsample gbpTrees and VELOCIraptor trees using FFTW");
 
-    options.add_options()("d,dim", "new grid dimension", cxxopts::value<int>())("g,gbptrees", "input gbpTrees grid file", cxxopts::value<std::string>())("v,velociraptor", "input VELOCIraptor grid file", cxxopts::value<std::string>())("o,output", "output file name", cxxopts::value<std::string>());
+    options.add_options()("d,dim", "new grid dimension", cxxopts::value<int>())("g,gbptrees", "input gbpTrees grid file", cxxopts::value<std::string>())("v,velociraptor", "input VELOCIraptor grid file", cxxopts::value<std::string>())("o,output", "output file name", cxxopts::value<std::string>())("h,help", "show help", cxxopts::value<bool>());
 
     auto vm = options.parse(argc, argv);
+
+    if(vm.count("help")) {
+        fmt::print(options.help());
+    }
 
     if (vm.count("gbptrees") && vm.count("velociraptor")) {
         fmt::print(stderr, "Must specify either gbpTrees or VELOCIraptor file. Not both...\n");
