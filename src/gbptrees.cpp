@@ -17,10 +17,10 @@
  */
 
 #include <array>
-#include <vector>
 #include <fmt/core.h>
 #include <fmt/ostream.h>
 #include <fstream>
+#include <vector>
 
 #include "gbptrees.hpp"
 
@@ -29,9 +29,9 @@ void regrid_gbptrees(const std::string fname_in, const std::string fname_out, co
     fmt::print("Regridding gbpTrees file {}\n", fname_in);
     std::ifstream ifs(fname_in, std::ios::binary | std::ios::in);
     std::ofstream ofs(fname_out, std::ios::binary | std::ios::out);
-    
+
     std::array<int, 3> n_cell;
-    std::array<int, 3> new_n_cell = {new_dim, new_dim, new_dim};
+    std::array<int, 3> new_n_cell = { new_dim, new_dim, new_dim };
     ifs.read((char*)(n_cell.data()), sizeof(int) * 3);
     fmt::print("\tn_cell = [{}] --> [{}]\n", fmt::join(n_cell, ", "), fmt::join(new_n_cell, ", "));
     ofs.write((char*)(new_n_cell.data()), sizeof(int) * 3);
@@ -59,7 +59,7 @@ void regrid_gbptrees(const std::string fname_in, const std::string fname_out, co
         std::string ident(32, '\0');
         ifs.read((char*)(ident.data()), sizeof(ident));
         ofs.write((char*)(ident.data()), sizeof(ident));
-        
+
         ident.resize(strlen(ident.c_str()));
         fmt::print("\nGrid {}\n=================\n", ident);
 
@@ -70,7 +70,7 @@ void regrid_gbptrees(const std::string fname_in, const std::string fname_out, co
         fmt::print("Reading grid... ");
         ifs.read((char*)grid.get(), sizeof(float) * grid.n_logical);
         fmt::print("done\n");
-        
+
         // DEBUG
         {
             std::vector subset(grid.get(), grid.get() + 10);
@@ -86,7 +86,7 @@ void regrid_gbptrees(const std::string fname_in, const std::string fname_out, co
         }
 
         grid.sample(new_n_cell);
-        
+
         // DEBUG
         {
             std::vector subset(grid.get(), grid.get() + 10);

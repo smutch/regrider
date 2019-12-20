@@ -19,8 +19,8 @@
 #ifndef GBPTREES_H
 #define GBPTREES_H
 
-#include <string>
 #include "grid.hpp"
+#include <string>
 
 /** Regrid a gbptrees file.
  *

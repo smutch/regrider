@@ -20,22 +20,22 @@
 #define GRID_H
 
 #include <array>
-#include <memory>
 #include <complex>
+#include <memory>
 
 /** A 3D grid class to handle input independent functionality.
  */
 class Grid {
 public:
-    std::array<int32_t, 3> n_cell;  /** The number of cells in each dimension */
-    std::array<double, 3> box_size;  /** The box size in input units (typically h^-1 Mpc) */
-    int n_logical;  /** The total number of cells */
-    int n_padded;  /** Number of elements in the padded array */
-    int n_complex;  /** The number of complex elements in the FFTd array */
-    bool flag_padded = false;  /** Has the indexing been reorder to be padded for an inplace FFT? */
+    std::array<int32_t, 3> n_cell; /** The number of cells in each dimension */
+    std::array<double, 3> box_size; /** The box size in input units (typically h^-1 Mpc) */
+    int n_logical; /** The total number of cells */
+    int n_padded; /** Number of elements in the padded array */
+    int n_complex; /** The number of complex elements in the FFTd array */
+    bool flag_padded = false; /** Has the indexing been reorder to be padded for an inplace FFT? */
 
 private:
-    std::unique_ptr<float, void (*)(float*)> grid;  /** A pointer to the grid data, allowing it to be
+    std::unique_ptr<float, void (*)(float*)> grid; /** A pointer to the grid data, allowing it to be
                                                       automatically freed when this Grid object goes out
                                                       of scope. */
 
@@ -91,8 +91,8 @@ public:
      * @param shape Shape of the 3D array
      * @return The index
      */
-    constexpr int index(int i, int j, int k, index_type type, std::array<int, 3>shape);
-    
+    constexpr int index(int i, int j, int k, index_type type, std::array<int, 3> shape);
+
     /** Indexing function for the current grid.
      *
      * @param i Index in 1st dimension

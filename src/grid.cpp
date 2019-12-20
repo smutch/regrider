@@ -16,12 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <cassert>
+#include <fftw3.h>
 #include <fmt/core.h>
 #include <fmt/ostream.h>
-#include <fftw3.h>
-#include <cassert>
-#include <omp.h>
 #include <iostream>
+#include <omp.h>
 #include <vector>
 
 #include "grid.hpp"
@@ -34,7 +34,8 @@ Grid::Grid(const std::array<int32_t, 3> n_cell_, const std::array<double, 3> box
     , n_complex { n_cell[0] * n_cell[1] * (n_cell[2] / 2 + 1) }
     , grid(fftwf_alloc_real(n_padded), [](float* grid) { fftwf_free(grid); }) {};
 
-void Grid::update_properties(const std::array<int32_t, 3> n_cell_) {
+void Grid::update_properties(const std::array<int32_t, 3> n_cell_)
+{
     n_cell = n_cell_;
     n_logical = n_cell[0] * n_cell[1] * n_cell[2];
     n_padded = n_cell[0] * n_cell[1] * 2 * (n_cell[2] / 2 + 1);
@@ -51,7 +52,7 @@ std::complex<float>* Grid::get_complex()
     return (std::complex<float>*)grid.get();
 }
 
-constexpr int Grid::index(int i, int j, int k, index_type type, std::array<int, 3>shape)
+constexpr int Grid::index(int i, int j, int k, index_type type, std::array<int, 3> shape)
 {
     auto index = k + shape[1] * (j + shape[0] * i);
     assert(index < n_logical);
@@ -233,9 +234,9 @@ void Grid::sample(const std::array<int, 3> new_n_cell)
     auto grid_ = grid.get();
 
     // TODO: I need to check to make sure this is valid
-    for(int ii = 0, ii_lo = 0; ii < n_cell[0]; ii += n_every[0], ++ii_lo) {
-        for(int jj = 0, jj_lo = 0; jj < n_cell[1]; jj += n_every[1], ++jj_lo) {
-            for(int kk = 0, kk_lo = 0; kk < n_cell[2]; kk += n_every[2], ++kk_lo) {
+    for (int ii = 0, ii_lo = 0; ii < n_cell[0]; ii += n_every[0], ++ii_lo) {
+        for (int jj = 0, jj_lo = 0; jj < n_cell[1]; jj += n_every[1], ++jj_lo) {
+            for (int kk = 0, kk_lo = 0; kk < n_cell[2]; kk += n_every[2], ++kk_lo) {
                 grid_[index(ii_lo, jj_lo, kk_lo, index_type::real, new_n_cell)] = grid_[index(ii, jj, kk, index_type::real)];
             }
         }
