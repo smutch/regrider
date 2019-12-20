@@ -18,4 +18,18 @@ add_custom_command(OUTPUT ${DOXYGEN_INDEX_FILE}
                    MAIN_DEPENDENCY ${DOXYFILE_OUT} ${DOXYFILE_IN}
                    COMMENT "Generating docs")
  
-add_custom_target(docs DEPENDS ${DOXYGEN_INDEX_FILE})
+add_custom_target(Doxygen DEPENDS ${DOXYGEN_INDEX_FILE})
+
+
+find_package(Sphinx REQUIRED)
+ 
+set(SPHINX_SOURCE ${CMAKE_CURRENT_SOURCE_DIR})
+set(SPHINX_BUILD ${CMAKE_CURRENT_BINARY_DIR}/docs/sphinx)
+ 
+add_custom_target(docs DEPENDS Doxygen
+                  COMMAND ${SPHINX_EXECUTABLE} -b html
+                  # Tell Breathe where to find the Doxygen output
+                  -Dbreathe_projects.Regrider=${DOXYGEN_OUTPUT_DIR}/xml
+                  ${SPHINX_SOURCE} ${SPHINX_BUILD}
+                  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                  COMMENT "Generating documentation with Sphinx")
