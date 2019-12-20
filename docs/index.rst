@@ -3,12 +3,29 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Regrider's documentation!
-====================================
+Regrider's documentation!
+=========================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+Downsample gbpTrees and VELOCIraptor trees using FFTW.
+
+.. .. toctree::
+..    :maxdepth: 2
+..    :caption: Contents:
+
+Usage
+=====
+
+.. code-block:: man
+
+   Usage:
+     regrider [OPTION...]
+   
+     -d, --dim arg           new grid dimension
+     -g, --gbptrees arg      input gbpTrees grid file
+     -v, --velociraptor arg  input VELOCIraptor grid file
+     -o, --output arg        output file name
+     -h, --help              show help
+
 
 API
 ===
@@ -23,6 +40,3 @@ Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
