@@ -3,14 +3,18 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Regrider's documentation!
-=========================
+Regrider
+========
 
-Downsample gbpTrees and VELOCIraptor trees using FFTW.
+| **Downsample gbpTrees and VELOCIraptor trees using FFTW.**
+| https://github.com/smutch/regrider
 
-.. .. toctree::
-..    :maxdepth: 2
-..    :caption: Contents:
+
+Installation
+============
+
+Coming soon...
+
 
 Usage
 =====
@@ -27,13 +31,12 @@ Usage
      -h, --help              show help
 
 
-API
-===
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents
 
-.. doxygenfile:: gbptrees.hpp
-
-.. doxygenclass:: Grid
-   :members:
+   GBPtrees <gbptrees>
+   grid
 
 
 Indices and tables
