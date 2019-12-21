@@ -1,11 +1,9 @@
-Regridder
-=========
-
-**WARNING: THIS IS NOT EVEN CLOSE TO BEING FINISHED!**
+Regrider
+========
 
 Downsample 3D cartesian grids using FFTW.
 
-Natively handles gbpTrees and VELOCIraptor files.
+Natively handles gbpTrees and VELOCIraptor files (at least it will soon!).
 
 
 TODO
@@ -18,7 +16,7 @@ TODO
 - [X] Reshuffle data inplace
 - [X] Write the data back out
 - [X] Get rid of choice of grid and convert all grids
-- [ ] Documentation
+- [X] Documentation
 - [ ] Tests
 - [ ] Do an implementation for VELOCIraptor
 
