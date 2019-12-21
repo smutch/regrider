@@ -1,0 +1,440 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>The Grid class &mdash; Regrider  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Regridding GBPtrees grids" href="gbptrees.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Regrider
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="gbptrees.html">GBPtrees</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The Grid class</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Regrider</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>The Grid class</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/grid.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="the-grid-class">
+<h1>The Grid class<a class="headerlink" href="#the-grid-class" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="_CPPv44Grid">
+<span id="_CPPv34Grid"></span><span id="_CPPv24Grid"></span><span id="Grid"></span><span class="target" id="classGrid"></span><em class="property">class </em><code class="sig-name descname">Grid</code><br /></dt>
+<dd><p>A 3D grid class to handle input independent functionality. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Types</p>
+<dl class="enum">
+<dt id="_CPPv4N4Grid10index_typeE">
+<span id="_CPPv3N4Grid10index_typeE"></span><span id="_CPPv2N4Grid10index_typeE"></span><span class="target" id="classGrid_1a6dc99bac0ef2e7c00f2f779af28f16b7"></span><em class="property">enum </em><code class="sig-name descname">index_type</code><br /></dt>
+<dd><p>A pointer to the grid data, allowing it to be automatically freed when this <a class="reference internal" href="#classGrid"><span class="std std-ref">Grid</span></a> object goes out of scope. The indexing type required for an ::index function call. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv4N4Grid6paddedE">
+<span id="_CPPv3N4Grid6paddedE"></span><span id="_CPPv2N4Grid6paddedE"></span><span class="target" id="classGrid_1a6dc99bac0ef2e7c00f2f779af28f16b7a5cf32afe38209e996df2e130da9fbedb"></span><code class="sig-name descname">padded</code><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N4Grid4realE">
+<span id="_CPPv3N4Grid4realE"></span><span id="_CPPv2N4Grid4realE"></span><span class="target" id="classGrid_1a6dc99bac0ef2e7c00f2f779af28f16b7a4bca24304861acde5770fdbe3cc2503b"></span><code class="sig-name descname">real</code><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N4Grid12complex_hermE">
+<span id="_CPPv3N4Grid12complex_hermE"></span><span id="_CPPv2N4Grid12complex_hermE"></span><span class="target" id="classGrid_1a6dc99bac0ef2e7c00f2f779af28f16b7a87078856cf2f7cf05c0c380aa7a9d5f0"></span><code class="sig-name descname">complex_herm</code><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="enum">
+<dt id="_CPPv4N4Grid11filter_typeE">
+<span id="_CPPv3N4Grid11filter_typeE"></span><span id="_CPPv2N4Grid11filter_typeE"></span><span class="target" id="classGrid_1a5da82656f8fdf10ff1f2f50871411ff1"></span><em class="property">enum </em><code class="sig-name descname">filter_type</code><br /></dt>
+<dd><p>The type of filter to be applied to the grid to smooth it. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv4N4Grid12real_top_hatE">
+<span id="_CPPv3N4Grid12real_top_hatE"></span><span id="_CPPv2N4Grid12real_top_hatE"></span><span class="target" id="classGrid_1a5da82656f8fdf10ff1f2f50871411ff1a160a2e1dac0c999b41e2f123d971ceda"></span><code class="sig-name descname">real_top_hat</code><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N4Grid9k_top_hatE">
+<span id="_CPPv3N4Grid9k_top_hatE"></span><span id="_CPPv2N4Grid9k_top_hatE"></span><span class="target" id="classGrid_1a5da82656f8fdf10ff1f2f50871411ff1aa412ae47974dbf380972d72142f6cf05"></span><code class="sig-name descname">k_top_hat</code><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N4Grid8gaussianE">
+<span id="_CPPv3N4Grid8gaussianE"></span><span id="_CPPv2N4Grid8gaussianE"></span><span class="target" id="classGrid_1a5da82656f8fdf10ff1f2f50871411ff1a304e2a3b544f6b9f267a151e1bcee487"></span><code class="sig-name descname">gaussian</code><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="_CPPv4N4Grid4GridEKNSt5arrayI7int32_tXL3EEEEKNSt5arrayIdXL3EEEE">
+<span id="_CPPv3N4Grid4GridEKNSt5arrayI7int32_tXL3EEEEKNSt5arrayIdXL3EEEE"></span><span id="_CPPv2N4Grid4GridEKNSt5arrayI7int32_tX3EEEKNSt5arrayIdX3EEE"></span><span id="Grid::Grid__std::array:int32_t.3:C.std::array:double.3:C"></span><span class="target" id="classGrid_1a0d1251910dfbc8cec830d9ad58b63a6e"></span><code class="sig-name descname">Grid</code><span class="sig-paren">(</span><em class="property">const</em> std::array&lt;int32_t, 3&gt; <em>n_cell_</em>, <em class="property">const</em> std::array&lt;double, 3&gt; <em>box_size_</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Basic constructor. This will allocate the grid array, and store the corresponding size in various forms.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">n_cell_</span></code>: The number of  cells in each dimension </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">box_size_</span></code>: The size of the simulation volume in input units </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4Grid17update_propertiesEKNSt5arrayI7int32_tXL3EEEE">
+<span id="_CPPv3N4Grid17update_propertiesEKNSt5arrayI7int32_tXL3EEEE"></span><span id="_CPPv2N4Grid17update_propertiesEKNSt5arrayI7int32_tX3EEE"></span><span id="Grid::update_properties__std::array:int32_t.3:C"></span><span class="target" id="classGrid_1a4f10a0af4a37598ea5c0c5bb0f765b26"></span>void <code class="sig-name descname">update_properties</code><span class="sig-paren">(</span><em class="property">const</em> std::array&lt;int32_t, 3&gt; <em>n_cell_</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Update the “size” of the grid for a new logical size. Note that this does not alter the size of the memory allocation, just what this allocation represents.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">n_cell_</span></code>: The new number of  cells in each dimension </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4Grid3getEv">
+<span id="_CPPv3N4Grid3getEv"></span><span id="_CPPv2N4Grid3getEv"></span><span id="Grid::get"></span><span class="target" id="classGrid_1a0fcbef8c2477b35283280a779016a061"></span>float *<code class="sig-name descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd><p>Return the pointer to the grid data.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Float pointer to the grid data. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4Grid11get_complexEv">
+<span id="_CPPv3N4Grid11get_complexEv"></span><span id="_CPPv2N4Grid11get_complexEv"></span><span id="Grid::get_complex"></span><span class="target" id="classGrid_1aaf9d3710d0a3361483b8188659c18db6"></span>std::complex&lt;float&gt; *<code class="sig-name descname">get_complex</code><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd><p>Return the pointer to the grid data, cast as a complex array.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Complex pointer to the grid data </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4Grid5indexEiii10index_typeNSt5arrayIiXL3EEEE">
+<span id="_CPPv3N4Grid5indexEiii10index_typeNSt5arrayIiXL3EEEE"></span><span id="_CPPv2N4Grid5indexEiii10index_typeNSt5arrayIiX3EEE"></span><span id="Grid::index__i.i.i.index_type.std::array:i.3:CE"></span><span class="target" id="classGrid_1a69f46f59fbc1f45f3d2c0cbe741f4cf5"></span><em class="property">constexpr</em> int <code class="sig-name descname">index</code><span class="sig-paren">(</span>int <em>i</em>, int <em>j</em>, int <em>k</em>, index_type <em>type</em>, std::array&lt;int, 3&gt; <em>shape</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Indexing function for arbitrary grid of any 3D size.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The index </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">i</span></code>: Index in 1st dimension </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">j</span></code>: Index in second dimension </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">k</span></code>: Index in third dimension </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shape</span></code>: Shape of the 3D array </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4Grid5indexEiii10index_type">
+<span id="_CPPv3N4Grid5indexEiii10index_type"></span><span id="_CPPv2N4Grid5indexEiii10index_type"></span><span id="Grid::index__i.i.i.index_typeCE"></span><span class="target" id="classGrid_1a205f6124ef9cc7b1495b656ef57a28d0"></span><em class="property">constexpr</em> int <code class="sig-name descname">index</code><span class="sig-paren">(</span>int <em>i</em>, int <em>j</em>, int <em>k</em>, index_type <em>type</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Indexing function for the current grid.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The index </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">i</span></code>: Index in 1st dimension </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">j</span></code>: Index in second dimension </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">k</span></code>: Index in third dimension </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4Grid20real_to_padded_orderEv">
+<span id="_CPPv3N4Grid20real_to_padded_orderEv"></span><span id="_CPPv2N4Grid20real_to_padded_orderEv"></span><span id="Grid::real_to_padded_order"></span><span class="target" id="classGrid_1a692a042e2c5386847bd6500cf2573d02"></span>void <code class="sig-name descname">real_to_padded_order</code><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd><p>Convert the grid from logical memory ordering to padded ordering. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4Grid20padded_to_real_orderEv">
+<span id="_CPPv3N4Grid20padded_to_real_orderEv"></span><span id="_CPPv2N4Grid20padded_to_real_orderEv"></span><span id="Grid::padded_to_real_order"></span><span class="target" id="classGrid_1abf1a9359630e41bd6d612ccfc6043414"></span>void <code class="sig-name descname">padded_to_real_order</code><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd><p>Convert the grid from padded memory ordering to logical ordering. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4Grid11forward_fftEi">
+<span id="_CPPv3N4Grid11forward_fftEi"></span><span id="_CPPv2N4Grid11forward_fftEi"></span><span id="Grid::forward_fft__i"></span><span class="target" id="classGrid_1a8c1c471b8524608ddb25725e7a3f13d3"></span>void <code class="sig-name descname">forward_fft</code><span class="sig-paren">(</span>int <em>n_threads</em> = -1<span class="sig-paren">)</span><br /></dt>
+<dd><p>Do the forward FFT</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">n_threads</span></code>: The number of openmp threads ot use for the transform. -1 &gt; all available (default). </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4Grid11reverse_fftEi">
+<span id="_CPPv3N4Grid11reverse_fftEi"></span><span id="_CPPv2N4Grid11reverse_fftEi"></span><span id="Grid::reverse_fft__i"></span><span class="target" id="classGrid_1a13f8fab8c17735f2b20d5e18f8f26091"></span>void <code class="sig-name descname">reverse_fft</code><span class="sig-paren">(</span>int <em>n_threads</em> = -1<span class="sig-paren">)</span><br /></dt>
+<dd><p>Do the reverse FFT</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">n_threads</span></code>: The number of openmp threads ot use for the transform. -1 &gt; all available (default). </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4Grid6filterE11filter_typeKf">
+<span id="_CPPv3N4Grid6filterE11filter_typeKf"></span><span id="_CPPv2N4Grid6filterE11filter_typeKf"></span><span id="Grid::filter__filter_type.floatC"></span><span class="target" id="classGrid_1a690b950fc0c58343a79619c4288db301"></span>void <code class="sig-name descname">filter</code><span class="sig-paren">(</span>filter_type <em>type</em>, <em class="property">const</em> float <em>R</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Filter the grid using a given filter type and size.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code>: The filter type to use </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">R</span></code>: the size (typically radius) of the filter </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4Grid6sampleEKNSt5arrayIiXL3EEEE">
+<span id="_CPPv3N4Grid6sampleEKNSt5arrayIiXL3EEEE"></span><span id="_CPPv2N4Grid6sampleEKNSt5arrayIiX3EEE"></span><span id="Grid::sample__std::array:i.3:C"></span><span class="target" id="classGrid_1ab437a5f52b6446751b80ddb87f6fb1c2"></span>void <code class="sig-name descname">sample</code><span class="sig-paren">(</span><em class="property">const</em> std::array&lt;int, 3&gt; <em>new_n_cell</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Subsample the grid to provide a new one with the requested dimensions.</p>
+<p>Note that the parameters of the <a class="reference internal" href="#classGrid"><span class="std std-ref">Grid</span></a> object will be updated correspondingly.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">new_n_cell</span></code>: The new logical size of the grid. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N4Grid8box_sizeE">
+<span id="_CPPv3N4Grid8box_sizeE"></span><span id="_CPPv2N4Grid8box_sizeE"></span><span id="Grid::box_size__std::array:double.3:"></span><span class="target" id="classGrid_1ac4c962fac1beb02e8303be4fdb5d24b0"></span>std::array&lt;double, 3&gt; <code class="sig-name descname">box_size</code><br /></dt>
+<dd><p>The number of cells in each dimension </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N4Grid9n_logicalE">
+<span id="_CPPv3N4Grid9n_logicalE"></span><span id="_CPPv2N4Grid9n_logicalE"></span><span id="Grid::n_logical__i"></span><span class="target" id="classGrid_1a0181d8ac61bff73dc651fafb9add5b87"></span>int <code class="sig-name descname">n_logical</code><br /></dt>
+<dd><p>The box size in input units (typically h^-1 Mpc) </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N4Grid8n_paddedE">
+<span id="_CPPv3N4Grid8n_paddedE"></span><span id="_CPPv2N4Grid8n_paddedE"></span><span id="Grid::n_padded__i"></span><span class="target" id="classGrid_1a6ca7b247aeed4cf777260dd2cd64bee2"></span>int <code class="sig-name descname">n_padded</code><br /></dt>
+<dd><p>The total number of cells </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N4Grid9n_complexE">
+<span id="_CPPv3N4Grid9n_complexE"></span><span id="_CPPv2N4Grid9n_complexE"></span><span id="Grid::n_complex__i"></span><span class="target" id="classGrid_1a572d2f8bd6b2a36a482e74cc3ebbad77"></span>int <code class="sig-name descname">n_complex</code><br /></dt>
+<dd><p>Number of elements in the padded array </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N4Grid11flag_paddedE">
+<span id="_CPPv3N4Grid11flag_paddedE"></span><span id="_CPPv2N4Grid11flag_paddedE"></span><span id="Grid::flag_padded__b"></span><span class="target" id="classGrid_1aa905b63e23103d24b3bc5ce3611bd1bf"></span>bool <code class="sig-name descname">flag_padded</code> = false<br /></dt>
+<dd><p>The number of complex elements in the FFTd array </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="gbptrees.html" class="btn btn-neutral float-left" title="Regridding GBPtrees grids" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Simon Mutch
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
