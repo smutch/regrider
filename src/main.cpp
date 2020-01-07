@@ -46,6 +46,11 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    if (!vm.count("dim")) {
+        fmt::print(stderr, "Must specify new grid dimension...\n");
+        return 1;
+    }
+
     fftwf_init_threads();
 
     if (vm.count("gbptrees")) {
