@@ -73,7 +73,7 @@ void regrid_gbptrees(const std::string fname_in, const std::string fname_out, co
 
         // DEBUG
         {
-            std::vector subset(grid.get(), grid.get() + 10);
+            std::vector<float> subset(grid.get(), grid.get() + 10);
             fmt::print("First 10 elements = {}\n", fmt::join(subset, ","));
         }
 
@@ -81,7 +81,7 @@ void regrid_gbptrees(const std::string fname_in, const std::string fname_out, co
 
         // DEBUG
         {
-            std::vector subset(grid.get(), grid.get() + 10);
+            std::vector<float> subset(grid.get(), grid.get() + 10);
             fmt::print("First 10 elements = {}\n", fmt::join(subset, ","));
         }
 
@@ -89,7 +89,7 @@ void regrid_gbptrees(const std::string fname_in, const std::string fname_out, co
 
         // DEBUG
         {
-            std::vector subset(grid.get(), grid.get() + 10);
+            std::vector<float> subset(grid.get(), grid.get() + 10);
             fmt::print("First 10 elements = {}\n", fmt::join(subset, ","));
         }
 
