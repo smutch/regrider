@@ -35,8 +35,7 @@ endif()
 add_subdirectory(vendor/fmt EXCLUDE_FROM_ALL)
 target_link_libraries(regrider PRIVATE fmt::fmt)
 
-find_path(FFTW_LIBRARY_DIR NAMES libfftw3f_omp.a PATH_SUFFIXES lib lib64)
-target_link_libraries(regrider PRIVATE "${FFTW_LIBRARY_DIR}/libfftw3f_omp.a" "${FFTW_LIBRARY_DIR}/libfftw3f.a")
+target_link_libraries(regrider PRIVATE libfftw3f_omp.so libfftw3f.so)
 find_path(FFTW_INCLUDE_DIR NAMES fftw3f.h fftw3.h)
 target_include_directories(regrider PRIVATE "${FFTW_INCLUDE_DIR}")
 
