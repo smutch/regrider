@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.12)
 project(regrider)
 
 # Add the cmake folder so the FindSphinx module is found
@@ -32,7 +32,7 @@ if(OpenMP_CXX_FOUND)
     target_link_libraries(regrider PRIVATE OpenMP::OpenMP_CXX)
 endif()
 
-find_package(fmt)
+add_subdirectory(vendor/fmt EXCLUDE_FROM_ALL)
 target_link_libraries(regrider PRIVATE fmt::fmt)
 
 find_path(FFTW_LIBRARY_DIR libfftw3f_omp.a)
