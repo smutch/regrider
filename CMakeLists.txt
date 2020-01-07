@@ -37,7 +37,7 @@ target_link_libraries(regrider PRIVATE fmt::fmt)
 
 find_path(FFTW_LIBRARY_DIR libfftw3f_omp.a)
 target_link_libraries(regrider PRIVATE "${FFTW_LIBRARY_DIR}/libfftw3f_omp.a" "${FFTW_LIBRARY_DIR}/libfftw3f.a")
-find_path(FFTW_INCLUDE_DIR fftw3f.h)
+find_path(FFTW_INCLUDE_DIR NAMES fftw3f.h fftw3.h)
 target_include_directories(regrider PRIVATE "${FFTW_INCLUDE_DIR}")
 
 add_subdirectory("docs")
