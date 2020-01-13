@@ -52,7 +52,7 @@ void regrid_gbptrees(const std::string fname_in, const std::string fname_out, co
     ofs.write((char*)(&ma_scheme), sizeof(int));
 
     auto grid = Grid(n_cell, box_size);
-    const double radius = (double)grid.n_cell[0] / (double)new_dim;
+    const double radius = (double)grid.n_cell[0] / (double)new_dim * 0.5;
 
     for (int ii = 0; ii < n_grids; ++ii) {
 
