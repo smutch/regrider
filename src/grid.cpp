@@ -25,6 +25,7 @@
 #include <vector>
 
 #include "grid.hpp"
+#include "utils.hpp"
 
 Grid::Grid(const std::array<int32_t, 3> n_cell_, const std::array<double, 3> box_size_)
     : n_cell { n_cell_ }
@@ -52,16 +53,16 @@ std::complex<float>* Grid::get_complex()
     return (std::complex<float>*)grid.get();
 }
 
-constexpr int Grid::index(int i, int j, int k, index_type type, std::array<int, 3> shape)
+constexpr int Grid::index(const int i, const int j, const int k, const index_type type, const std::array<int, 3> shape)
 {
-    auto index = k + shape[1] * (j + shape[0] * i);
-    assert(index < n_logical);
+    int index = 0;
 
     switch (type) {
     case index_type::padded:
         index = k + (2 * (shape[1] / 2 + 1)) * (j + shape[0] * i);
         break;
     case index_type::real:
+        index = k + shape[1] * (j + shape[0] * i);
         break;
     case index_type::complex_herm:
         index = k + (shape[1] / 2 + 1) * (j + shape[0] * i);
@@ -74,7 +75,7 @@ constexpr int Grid::index(int i, int j, int k, index_type type, std::array<int, 
     return index;
 }
 
-constexpr int Grid::index(int i, int j, int k, index_type type)
+constexpr int Grid::index(const int i, const int j, const int k, const index_type type)
 {
     return Grid::index(i, j, k, type, n_cell);
 }
@@ -82,20 +83,33 @@ constexpr int Grid::index(int i, int j, int k, index_type type)
 void Grid::real_to_padded_order()
 {
     auto grid_ = get();
+    // std::vector<bool> used(n_padded, false);
     for (int ii = n_cell[0] - 1; ii >= 0; --ii)
         for (int jj = n_cell[1] - 1; jj >= 0; --jj)
-            for (int kk = n_cell[2] - 1; kk >= 0; --kk)
-                grid_[index(ii, jj, kk, index_type::padded)] = grid_[index(ii, jj, kk, index_type::real)];
+            for (int kk = n_cell[2] - 1; kk >= 0; --kk) {
+                auto to = index(ii, jj, kk, index_type::padded);
+                auto from = index(ii, jj, kk, index_type::real);
+                // assert(!used[from]);
+                // used[to] = true;
+                grid_[to] = grid_[from];
+            }
     flag_padded = true;
 }
 
 void Grid::padded_to_real_order()
 {
     auto grid_ = get();
-    for (int ii = n_cell[0] - 1; ii >= 0; --ii)
-        for (int jj = n_cell[1] - 1; jj >= 0; --jj)
-            for (int kk = n_cell[2] - 1; kk >= 0; --kk)
-                grid_[index(ii, jj, kk, index_type::real)] = grid_[index(ii, jj, kk, index_type::padded)];
+    // std::vector<bool> used(n_padded, false);
+    for (int ii = 0; ii < n_cell[0]; ++ii)
+        for (int jj = 0; jj < n_cell[1]; ++jj)
+            for (int kk = 0; kk < n_cell[2]; ++kk)
+            {
+                auto to = index(ii, jj, kk, index_type::real);
+                auto from = index(ii, jj, kk, index_type::padded);
+                // assert(!used[from]);
+                // used[to] = true;
+                grid_[to] = grid_[from];
+            }
     flag_padded = false;
 }
 
@@ -219,7 +233,7 @@ void Grid::filter(filter_type type, const float R)
 
     reverse_fft();
 
-    fmt::print("done\n");
+    print_done();
 }
 
 void Grid::sample(const std::array<int, 3> new_n_cell)
@@ -244,5 +258,5 @@ void Grid::sample(const std::array<int, 3> new_n_cell)
 
     update_properties(new_n_cell);
 
-    fmt::print("done\n");
+    print_done();
 }

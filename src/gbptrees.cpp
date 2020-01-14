@@ -19,10 +19,12 @@
 #include <array>
 #include <fmt/core.h>
 #include <fmt/ostream.h>
+#include <fmt/color.h>
 #include <fstream>
 #include <vector>
 
 #include "gbptrees.hpp"
+#include "utils.hpp"
 
 void regrid_gbptrees(const std::string fname_in, const std::string fname_out, const int new_dim)
 {
@@ -69,7 +71,7 @@ void regrid_gbptrees(const std::string fname_in, const std::string fname_out, co
 
         fmt::print("Reading grid... ");
         ifs.read((char*)grid.get(), sizeof(float) * grid.n_logical);
-        fmt::print("done\n");
+        print_done();
 
         // DEBUG
         {
@@ -83,6 +85,10 @@ void regrid_gbptrees(const std::string fname_in, const std::string fname_out, co
         {
             std::vector<float> subset(grid.get(), grid.get() + 10);
             fmt::print("First 10 elements = {}\n", fmt::join(subset, ","));
+
+            // Dump
+            std::ofstream dfs(fname_out+"-dump.dat", std::ios::binary | std::ios::out);
+            dfs.write((char*)grid.get(), sizeof(float) * grid.n_logical);
         }
 
         grid.sample(new_n_cell);
@@ -95,13 +101,12 @@ void regrid_gbptrees(const std::string fname_in, const std::string fname_out, co
 
         fmt::print("Writing subsampled grid... ");
         ofs.write((char*)grid.get(), sizeof(float) * grid.n_logical);
-        fmt::print("done\n");
+        print_done();
     }
 
-    fmt::print("done\n");
 
     ofs.close();
     ifs.close();
 
-    fmt::print("...done\n");
+    print_done();
 }

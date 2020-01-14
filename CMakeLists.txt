@@ -18,6 +18,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "-O1 -g -fsanitize=address,undefined,leak -fno-omit-fr
 
 set(SRC
     src/main.cpp
+    src/utils.cpp
     src/grid.cpp
     src/gbptrees.cpp
     )

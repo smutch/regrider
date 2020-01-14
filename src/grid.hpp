@@ -91,7 +91,7 @@ public:
      * @param shape Shape of the 3D array
      * @return The index
      */
-    constexpr int index(int i, int j, int k, index_type type, std::array<int, 3> shape);
+    constexpr int index(const int i, const int j, const int k, const index_type type, const std::array<int, 3> shape);
 
     /** Indexing function for the current grid.
      *
@@ -100,7 +100,7 @@ public:
      * @param k Index in third dimension
      * @return The index
      */
-    constexpr int index(int i, int j, int k, index_type type);
+    constexpr int index(const int i, const int j, const int k, const index_type type);
 
     /** Convert the grid from logical memory ordering to padded ordering.
      */
