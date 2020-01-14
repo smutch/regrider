@@ -37,6 +37,7 @@ Usage
 
    GBPtrees <gbptrees>
    grid
+   utils
 
 
 Indices and tables
