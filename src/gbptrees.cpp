@@ -85,10 +85,6 @@ void regrid_gbptrees(const std::string fname_in, const std::string fname_out, co
         {
             std::vector<float> subset(grid.get(), grid.get() + 10);
             fmt::print("First 10 elements = {}\n", fmt::join(subset, ","));
-
-            // Dump
-            std::ofstream dfs(fname_out+"-dump.dat", std::ios::binary | std::ios::out);
-            dfs.write((char*)grid.get(), sizeof(float) * grid.n_logical);
         }
 
         grid.sample(new_n_cell);
