@@ -35,26 +35,26 @@ void regrid_gbptrees(const std::string fname_in, const std::string fname_out, co
     std::array<int, 3> n_cell;
     std::array<int, 3> new_n_cell = { new_dim, new_dim, new_dim };
     ifs.read((char*)(n_cell.data()), sizeof(int) * 3);
-    fmt::print("\tn_cell = [{}] --> [{}]\n", fmt::join(n_cell, ", "), fmt::join(new_n_cell, ", "));
+    fmt::print("n_cell = [{}] --> [{}]\n", fmt::join(n_cell, ", "), fmt::join(new_n_cell, ", "));
     ofs.write((char*)(new_n_cell.data()), sizeof(int) * 3);
 
     std::array<double, 3> box_size;
     ifs.read((char*)(box_size.data()), sizeof(double) * 3);
-    fmt::print("\tbox_size = {}\n", fmt::join(box_size, ","));
+    fmt::print("box_size = {}\n", fmt::join(box_size, ","));
     ofs.write((char*)(box_size.data()), sizeof(double) * 3);
 
     int32_t n_grids;
     ifs.read((char*)(&n_grids), sizeof(int));
-    fmt::print("\tn_grids = {}\n", n_grids);
+    fmt::print("n_grids = {}\n", n_grids);
     ofs.write((char*)(&n_grids), sizeof(int));
 
     int32_t ma_scheme;
     ifs.read((char*)(&ma_scheme), sizeof(int));
-    fmt::print("\tma_scheme = {}\n", ma_scheme);
+    fmt::print("ma_scheme = {}\n", ma_scheme);
     ofs.write((char*)(&ma_scheme), sizeof(int));
 
     auto grid = Grid(n_cell, box_size);
-    const double radius = (double)grid.n_cell[0] / (double)new_dim * 0.5;
+    const double radius = (double)grid.box_size[0] / (double)new_dim * 0.5;
 
     for (int ii = 0; ii < n_grids; ++ii) {
 
@@ -73,27 +73,30 @@ void regrid_gbptrees(const std::string fname_in, const std::string fname_out, co
         ifs.read((char*)grid.get(), sizeof(float) * grid.n_logical);
         print_done();
 
-        // DEBUG
+#ifdef DEBUG
         {
             std::vector<float> subset(grid.get(), grid.get() + 10);
             fmt::print("First 10 elements = {}\n", fmt::join(subset, ","));
         }
+#endif
 
         grid.filter(Grid::filter_type::real_top_hat, radius);
 
-        // DEBUG
+#ifdef DEBUG
         {
             std::vector<float> subset(grid.get(), grid.get() + 10);
             fmt::print("First 10 elements = {}\n", fmt::join(subset, ","));
         }
+#endif
 
         grid.sample(new_n_cell);
 
-        // DEBUG
+#ifdef DEBUG
         {
             std::vector<float> subset(grid.get(), grid.get() + 10);
             fmt::print("First 10 elements = {}\n", fmt::join(subset, ","));
         }
+#endif
 
         fmt::print("Writing subsampled grid... ");
         ofs.write((char*)grid.get(), sizeof(float) * grid.n_logical);

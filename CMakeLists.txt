@@ -14,7 +14,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
 # compile flags
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native")
-set(CMAKE_CXX_FLAGS_DEBUG "-O1 -g -fsanitize=address,undefined,leak -fno-omit-frame-pointer")
+set(CMAKE_CXX_FLAGS_DEBUG "-O1 -g -fsanitize=address,undefined,leak -fno-omit-frame-pointer -DDEBUG")
 
 set(SRC
     src/main.cpp
@@ -28,10 +28,8 @@ set_property(TARGET regrider PROPERTY CXX_STANDARD 20)
 
 target_include_directories(regrider PRIVATE "${CMAKE_SOURCE_DIR}/include")
 
-find_package(OpenMP)
-if(OpenMP_CXX_FOUND)
-    target_link_libraries(regrider PRIVATE OpenMP::OpenMP_CXX)
-endif()
+find_package(OpenMP REQUIRED)
+target_link_libraries(regrider PRIVATE OpenMP::OpenMP_CXX)
 
 add_subdirectory(vendor/fmt EXCLUDE_FROM_ALL)
 target_link_libraries(regrider PRIVATE fmt::fmt)
