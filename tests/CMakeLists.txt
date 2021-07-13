@@ -1,0 +1,11 @@
+find_package(Criterion)
+
+if(CRITERION_FOUND)
+    add_executable(test_filter test_filter.c)
+    set_property(TARGET test_filter PROPERTY C_STANDARD 99)
+    target_include_directories(test_filter PRIVATE ${CRITERION_INCLUDE_DIR} ${CMAKE_SOURCE_DIR})
+    target_link_libraries(test_filter PRIVATE ${CRITERION_LIBRARY} regrider_lib)
+    add_test(NAME test_filter COMMAND test_filter)
+else()
+    message(WARNING "Failed to find Criterion. You will not be able to run tests.")
+endif(CRITERION_FOUND)
