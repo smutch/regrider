@@ -175,7 +175,7 @@ void Grid::filter(filter_type type, const float R)
 
     auto complex_grid = get_complex();
 
-#pragma omp parallel for default(none) firstprivate(delta_k) shared(complex_grid, stderr, type)
+#pragma omp parallel for default(none) firstprivate(delta_k, middle, R) shared(complex_grid, stderr, type)
     for (int n_x = 0; n_x < n_cell[0]; ++n_x) {
         double k_x = 0;
 
