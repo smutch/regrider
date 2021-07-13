@@ -53,7 +53,7 @@ std::complex<float>* Grid::get_complex()
     return (std::complex<float>*)grid.get();
 }
 
-constexpr int Grid::index(const int i, const int j, const int k, const index_type type, const std::array<int, 3> shape)
+int Grid::index(const int i, const int j, const int k, const index_type type, const std::array<int, 3> shape)
 {
     int index = 0;
 
@@ -75,7 +75,7 @@ constexpr int Grid::index(const int i, const int j, const int k, const index_typ
     return index;
 }
 
-constexpr int Grid::index(const int i, const int j, const int k, const index_type type)
+int Grid::index(const int i, const int j, const int k, const index_type type)
 {
     return Grid::index(i, j, k, type, n_cell);
 }
@@ -151,7 +151,7 @@ void Grid::reverse_fft(int n_threads)
     padded_to_real_order();
 }
 
-void Grid::filter(filter_type type, const float R)
+void Grid::filter(filter_type type, const double R)
 {
 
     fmt::print("Filtering grid: ");

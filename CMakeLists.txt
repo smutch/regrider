@@ -33,9 +33,9 @@ target_link_libraries(regrider_lib PRIVATE OpenMP::OpenMP_CXX)
 add_subdirectory(vendor/fmt EXCLUDE_FROM_ALL)
 target_link_libraries(regrider_lib PUBLIC fmt::fmt)
 
-target_link_libraries(regrider_lib PUBLIC libfftw3f_omp.so libfftw3f.so)
-find_path(FFTW_INCLUDE_DIR NAMES fftw3f.h fftw3.h)
-target_include_directories(regrider_lib PUBLIC "${FFTW_INCLUDE_DIR}")
+find_package(FFTW REQUIRED)
+target_include_directories(regrider_lib PUBLIC ${FFTW_INCLUDE_DIRS})
+target_link_libraries(regrider_lib PUBLIC ${FFTW_LIBRARIES})
 
 add_executable(regrider src/main.cpp)
 target_link_libraries(regrider PRIVATE regrider_lib)

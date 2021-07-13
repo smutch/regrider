@@ -1,9 +1,9 @@
 find_package(Criterion)
 
 if(CRITERION_FOUND)
-    add_executable(test_filter test_filter.c)
+    add_executable(test_filter test_filter.cpp)
     set_property(TARGET test_filter PROPERTY C_STANDARD 99)
-    target_include_directories(test_filter PRIVATE ${CRITERION_INCLUDE_DIR} ${CMAKE_SOURCE_DIR})
+    target_include_directories(test_filter PRIVATE ${CRITERION_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/src)
     target_link_libraries(test_filter PRIVATE ${CRITERION_LIBRARY} regrider_lib)
     add_test(NAME test_filter COMMAND test_filter)
 else()

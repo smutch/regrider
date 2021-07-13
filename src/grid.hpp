@@ -91,7 +91,7 @@ public:
      * @param shape Shape of the 3D array
      * @return The index
      */
-    constexpr int index(const int i, const int j, const int k, const index_type type, const std::array<int, 3> shape);
+    int index(const int i, const int j, const int k, const index_type type, const std::array<int, 3> shape);
 
     /** Indexing function for the current grid.
      *
@@ -100,7 +100,7 @@ public:
      * @param k Index in third dimension
      * @return The index
      */
-    constexpr int index(const int i, const int j, const int k, const index_type type);
+    int index(const int i, const int j, const int k, const index_type type);
 
     /** Convert the grid from logical memory ordering to padded ordering.
      */
@@ -127,7 +127,7 @@ public:
      * @param type The filter type to use
      * @param R the size (typically radius) of the filter
      */
-    void filter(filter_type type, const float R);
+    void filter(filter_type type, const double R);
 
     /** Subsample the grid to provide a new one with the requested dimensions.
      *
