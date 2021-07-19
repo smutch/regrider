@@ -33,7 +33,19 @@ Grid::Grid(const std::array<int32_t, 3> n_cell_, const std::array<double, 3> box
     , n_logical { n_cell[0] * n_cell[1] * n_cell[2] }
     , n_padded { n_cell[0] * n_cell[1] * 2 * (n_cell[2] / 2 + 1) }
     , n_complex { n_cell[0] * n_cell[1] * (n_cell[2] / 2 + 1) }
-    , grid(fftwf_alloc_real(n_padded), [](float* grid) { fftwf_free(grid); }) {};
+    , grid(fftwf_alloc_real(n_padded), [](float* grid) { fftwf_free(grid); })
+{
+    sprintf(wisdom_fname, "fftw3f-inplace_dft_3d-%dx%dx%d.wisdom", n_cell[0], n_cell[1], n_cell[2]);
+    if (fftwf_import_wisdom_from_filename(wisdom_fname)) {
+        loaded_wisdom = true;
+    }
+}
+
+Grid::~Grid() {
+  if (!loaded_wisdom) {
+    fftwf_export_wisdom_to_filename(wisdom_fname);
+  }
+}
 
 void Grid::update_properties(const std::array<int32_t, 3> n_cell_)
 {
@@ -124,7 +136,7 @@ void Grid::forward_fft(int n_threads)
     }
 
     fftwf_plan_with_nthreads(n_threads);
-    auto plan = fftwf_plan_dft_r2c_3d(n_cell[0], n_cell[1], n_cell[2], (float*)get(), (fftwf_complex*)get(), FFTW_ESTIMATE);
+    auto plan = fftwf_plan_dft_r2c_3d(n_cell[0], n_cell[1], n_cell[2], (float*)get(), (fftwf_complex*)get(), FFTW_PATIENT);
     fftwf_execute(plan);
     fftwf_destroy_plan(plan);
 
@@ -144,7 +156,7 @@ void Grid::reverse_fft(int n_threads)
     }
 
     fftwf_plan_with_nthreads(n_threads);
-    auto plan = fftwf_plan_dft_c2r_3d(n_cell[0], n_cell[1], n_cell[2], (fftwf_complex*)get(), (float*)get(), FFTW_ESTIMATE);
+    auto plan = fftwf_plan_dft_c2r_3d(n_cell[0], n_cell[1], n_cell[2], (fftwf_complex*)get(), (float*)get(), FFTW_PATIENT);
     fftwf_execute(plan);
     fftwf_destroy_plan(plan);
 

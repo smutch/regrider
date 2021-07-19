@@ -38,6 +38,9 @@ private:
     std::unique_ptr<float, void (*)(float*)> grid; /** A pointer to the grid data, allowing it to be
                                                       automatically freed when this Grid object goes out
                                                       of scope. */
+    bool loaded_wisdom = false;  /** Have we loaded wisdom from a file? **/
+    char wisdom_fname[256];  /** The filename of the wisdom file **/
+
 
 public:
     /** The indexing type required for an ::index function call.
@@ -63,6 +66,11 @@ public:
      * @param box_size_ The size of the simulation volume in input units
      */
     Grid(const std::array<int32_t, 3> n_cell_, const std::array<double, 3> box_size_);
+
+    /** Basic desctructor.
+     * This will store any accumulated wisdom from the grid before freeing the relevant memory.
+     */
+    ~Grid(void);
 
     /** Update the "size" of the grid for a new logical size.
      * Note that this does not alter the size of the memory allocation, just what this allocation represents.
