@@ -28,7 +28,8 @@ author = 'Simon Mutch'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "breathe"
+    "breathe",
+    "sphinx_rtd_theme",
 ]
 
 breathe_default_project = "Regrider"

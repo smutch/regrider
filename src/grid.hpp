@@ -29,23 +29,23 @@
  */
 class Grid {
 public:
-    std::array<int32_t, 3> n_cell; /** The number of cells in each dimension */
-    std::array<double, 3> box_size; /** The box size in input units (typically h^-1 Mpc) */
-    int n_logical; /** The total number of cells */
-    int n_padded; /** Number of elements in the padded array */
-    int n_complex; /** The number of complex elements in the FFTd array */
-    bool flag_padded = false; /** Has the indexing been reorder to be padded for an inplace FFT? */
+    std::array<int32_t, 3> n_cell; //< The number of cells in each dimension
+    std::array<double, 3> box_size; //< The box size in input units (typically h^-1 Mpc) 
+    int n_logical; //< The total number of cells 
+    int n_padded; //< Number of elements in the padded array 
+    int n_complex; //< The number of complex elements in the FFTd array 
+    bool flag_padded = false; //< Has the indexing been reorder to be padded for an inplace FFT? 
 
 private:
-    std::unique_ptr<float, void (*)(float*)> grid; /** A pointer to the grid data, allowing it to be
-                                                      automatically freed when this Grid object goes out
-                                                      of scope. */
-    bool loaded_wisdom = false;  /** Have we loaded wisdom from a file? **/
-    char wisdom_fname[256];  /** The filename of the wisdom file **/
+    std::unique_ptr<float, void (*)(float*)> grid; /**< A pointer to the grid data, allowing it to be
+                                                       automatically freed when this Grid object goes out
+                                                       of scope. */
+    bool loaded_wisdom = false; //< Have we loaded wisdom from a file? 
+    char wisdom_fname[256]; //< The filename of the wisdom file 
 
 
 public:
-    /** The indexing type required for an ::index function call.
+    /** The indexing type required for an `Grid::index` function call.
      */
     enum class index_type {
         padded,
