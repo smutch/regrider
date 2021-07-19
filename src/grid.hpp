@@ -19,9 +19,11 @@
 #ifndef GRID_H
 #define GRID_H
 
+#include "fftw3.h"
 #include <array>
 #include <complex>
 #include <memory>
+#include <cstring>
 
 /** A 3D grid class to handle input independent functionality.
  */
@@ -71,6 +73,14 @@ public:
      * This will store any accumulated wisdom from the grid before freeing the relevant memory.
      */
     ~Grid(void);
+
+    /** Copy constructor.
+     */
+    Grid(const Grid& other);
+    
+    /** Assignment constructor.
+     */
+    Grid& operator=(const Grid& other);
 
     /** Update the "size" of the grid for a new logical size.
      * Note that this does not alter the size of the memory allocation, just what this allocation represents.

@@ -38,14 +38,31 @@ Grid::Grid(const std::array<int32_t, 3> n_cell_, const std::array<double, 3> box
     sprintf(wisdom_fname, "fftw3f-inplace_dft_3d-%dx%dx%d.wisdom", n_cell[0], n_cell[1], n_cell[2]);
     if (fftwf_import_wisdom_from_filename(wisdom_fname)) {
         loaded_wisdom = true;
+    } else {
+      fmt::print("No wisdom detected ({})\n", wisdom_fname);
     }
 }
 
 Grid::~Grid() {
+  fmt::print("Calling destructor...\n");
   if (!loaded_wisdom) {
+    fmt::print("Saving wisdom to {}\n", wisdom_fname);
     fftwf_export_wisdom_to_filename(wisdom_fname);
   }
 }
+
+Grid::Grid(const Grid& other) : Grid(other.n_cell, other.box_size) {
+  std::memcpy(grid.get(), other.grid.get(), sizeof(float)*n_padded);
+}
+
+Grid& Grid::operator=(const Grid& other) {
+  if (this == &other) {
+    return *this;
+  }
+  std::memcpy(grid.get(), other.grid.get(), sizeof(float)*n_padded);
+  return *this;
+}
+
 
 void Grid::update_properties(const std::array<int32_t, 3> n_cell_)
 {
@@ -136,7 +153,7 @@ void Grid::forward_fft(int n_threads)
     }
 
     fftwf_plan_with_nthreads(n_threads);
-    auto plan = fftwf_plan_dft_r2c_3d(n_cell[0], n_cell[1], n_cell[2], (float*)get(), (fftwf_complex*)get(), FFTW_PATIENT);
+    auto plan = fftwf_plan_dft_r2c_3d(n_cell[0], n_cell[1], n_cell[2], (float*)get(), (fftwf_complex*)get(), FFTW_PATIENT | FFTW_WISDOM_ONLY);
     fftwf_execute(plan);
     fftwf_destroy_plan(plan);
 
