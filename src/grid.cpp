@@ -38,18 +38,13 @@ Grid::Grid(const std::array<int32_t, 3> n_cell_, const std::array<double, 3> box
     fftwf_plan_with_nthreads(omp_get_max_threads());
     sprintf(wisdom_fname, "fftw3f-inplace_dft_3d-%dx%dx%d.wisdom", n_cell[0], n_cell[1], n_cell[2]);
     if (fftwf_import_wisdom_from_filename(wisdom_fname)) {
-        loaded_wisdom = true;
-    } else {
-      fmt::print("No wisdom detected ({})\n", wisdom_fname);
+      fmt::print("Loading wisdom from {}\n", wisdom_fname);
     }
 }
 
 Grid::~Grid() {
-  fmt::print("Calling destructor...\n");
-  if (!loaded_wisdom) {
-    fmt::print("Saving wisdom to {}\n", wisdom_fname);
-    fftwf_export_wisdom_to_filename(wisdom_fname);
-  }
+  fmt::print("Saving wisdom to {}\n", wisdom_fname);
+  fftwf_export_wisdom_to_filename(wisdom_fname);
 }
 
 Grid::Grid(const Grid& other) : Grid(other.n_cell, other.box_size) {

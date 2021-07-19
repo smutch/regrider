@@ -40,7 +40,6 @@ private:
     std::unique_ptr<float, void (*)(float*)> grid; /**< A pointer to the grid data, allowing it to be
                                                        automatically freed when this Grid object goes out
                                                        of scope. */
-    bool loaded_wisdom = false; //< Have we loaded wisdom from a file? 
     char wisdom_fname[256]; //< The filename of the wisdom file 
 
 
