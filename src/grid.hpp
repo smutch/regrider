@@ -122,23 +122,19 @@ public:
 
     /** Convert the grid from logical memory ordering to padded ordering.
      */
-    void real_to_padded_order();
+    void real_to_padded_order(void);
 
     /** Convert the grid from padded memory ordering to logical ordering.
      */
-    void padded_to_real_order();
+    void padded_to_real_order(void);
 
     /** Do the forward FFT
-     *
-     * @param n_threads The number of openmp threads ot use for the transform. -1 --> all available (default).
      */
-    void forward_fft(int n_threads = -1);
+    void forward_fft(void);
 
     /** Do the reverse FFT
-     *
-     * @param n_threads The number of openmp threads ot use for the transform. -1 --> all available (default).
      */
-    void reverse_fft(int n_threads = -1);
+    void reverse_fft(void);
 
     /** Filter the grid using a given filter type and size.
      *
