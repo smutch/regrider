@@ -19,28 +19,32 @@
 #ifndef GRID_H
 #define GRID_H
 
+#include "fftw3.h"
 #include <array>
 #include <complex>
 #include <memory>
+#include <cstring>
 
 /** A 3D grid class to handle input independent functionality.
  */
 class Grid {
 public:
-    std::array<int32_t, 3> n_cell; /** The number of cells in each dimension */
-    std::array<double, 3> box_size; /** The box size in input units (typically h^-1 Mpc) */
-    int n_logical; /** The total number of cells */
-    int n_padded; /** Number of elements in the padded array */
-    int n_complex; /** The number of complex elements in the FFTd array */
-    bool flag_padded = false; /** Has the indexing been reorder to be padded for an inplace FFT? */
+    std::array<int32_t, 3> n_cell; //< The number of cells in each dimension
+    std::array<double, 3> box_size; //< The box size in input units (typically h^-1 Mpc) 
+    int n_logical; //< The total number of cells 
+    int n_padded; //< Number of elements in the padded array 
+    int n_complex; //< The number of complex elements in the FFTd array 
+    bool flag_padded = false; //< Has the indexing been reorder to be padded for an inplace FFT? 
 
 private:
-    std::unique_ptr<float, void (*)(float*)> grid; /** A pointer to the grid data, allowing it to be
-                                                      automatically freed when this Grid object goes out
-                                                      of scope. */
+    std::unique_ptr<float, void (*)(float*)> grid; /**< A pointer to the grid data, allowing it to be
+                                                       automatically freed when this Grid object goes out
+                                                       of scope. */
+    char wisdom_fname[256]; //< The filename of the wisdom file 
+
 
 public:
-    /** The indexing type required for an ::index function call.
+    /** The indexing type required for an `Grid::index` function call.
      */
     enum class index_type {
         padded,
@@ -63,6 +67,19 @@ public:
      * @param box_size_ The size of the simulation volume in input units
      */
     Grid(const std::array<int32_t, 3> n_cell_, const std::array<double, 3> box_size_);
+
+    /** Basic desctructor.
+     * This will store any accumulated wisdom from the grid before freeing the relevant memory.
+     */
+    ~Grid(void);
+
+    /** Copy constructor.
+     */
+    Grid(const Grid& other);
+    
+    /** Assignment constructor.
+     */
+    Grid& operator=(const Grid& other);
 
     /** Update the "size" of the grid for a new logical size.
      * Note that this does not alter the size of the memory allocation, just what this allocation represents.
@@ -104,23 +121,19 @@ public:
 
     /** Convert the grid from logical memory ordering to padded ordering.
      */
-    void real_to_padded_order();
+    void real_to_padded_order(void);
 
     /** Convert the grid from padded memory ordering to logical ordering.
      */
-    void padded_to_real_order();
+    void padded_to_real_order(void);
 
     /** Do the forward FFT
-     *
-     * @param n_threads The number of openmp threads ot use for the transform. -1 --> all available (default).
      */
-    void forward_fft(int n_threads = -1);
+    void forward_fft(void);
 
     /** Do the reverse FFT
-     *
-     * @param n_threads The number of openmp threads ot use for the transform. -1 --> all available (default).
      */
-    void reverse_fft(int n_threads = -1);
+    void reverse_fft(void);
 
     /** Filter the grid using a given filter type and size.
      *
