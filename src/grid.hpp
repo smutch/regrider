@@ -41,6 +41,8 @@ private:
                                                        automatically freed when this Grid object goes out
                                                        of scope. */
     char wisdom_fname[256]; //< The filename of the wisdom file 
+    fftwf_plan forward_plan; //< The forward (r2c) transform plan
+    fftwf_plan reverse_plan; //< The reverse (c2r) transform plan
 
 
 public:
@@ -69,7 +71,7 @@ public:
     Grid(const std::array<int32_t, 3> n_cell_, const std::array<double, 3> box_size_);
 
     /** Basic desctructor.
-     * This will store any accumulated wisdom from the grid before freeing the relevant memory.
+     * This will free the fftw plans created during initialisation.
      */
     ~Grid(void);
 

@@ -29,6 +29,6 @@ Test(filter, basic) {
     rgrid_total += rgrid[ii];
   }
   
-  // cr_assert_float_eq(rgrid_total, 10.0, tolerance);
+  cr_assert_float_eq(rgrid_total, 10.0, tolerance);
   cr_assert_float_eq(rgrid[0], 0.0, tolerance);
 }

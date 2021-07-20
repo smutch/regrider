@@ -35,16 +35,30 @@ Grid::Grid(const std::array<int32_t, 3> n_cell_, const std::array<double, 3> box
     , n_complex { n_cell[0] * n_cell[1] * (n_cell[2] / 2 + 1) }
     , grid(fftwf_alloc_real(n_padded), [](float* grid) { fftwf_free(grid); })
 {
-    fftwf_plan_with_nthreads(omp_get_max_threads());
-    sprintf(wisdom_fname, "fftw3f-inplace_dft_3d-%dx%dx%d.wisdom", n_cell[0], n_cell[1], n_cell[2]);
+    auto n_threads = omp_get_max_threads();
+    fftwf_plan_with_nthreads(n_threads);
+    sprintf(wisdom_fname, "fftw3f-inplace_dft_3d-%dx%dx%d-threads_%d.wisdom", n_cell[0], n_cell[1], n_cell[2], n_threads);
+    auto save_wisdom = false;
     if (fftwf_import_wisdom_from_filename(wisdom_fname)) {
-      fmt::print("Loading wisdom from {}\n", wisdom_fname);
+      fmt::print("Loaded wisdom from {}\n", wisdom_fname);
+    } else {
+      fmt::print("Generating wisdom...\n");
+      save_wisdom = true;
     }
+
+    forward_plan = fftwf_plan_dft_r2c_3d(n_cell[0], n_cell[1], n_cell[2], (float*)get(), (fftwf_complex*)get(), FFTW_PATIENT);
+    reverse_plan = fftwf_plan_dft_c2r_3d(n_cell[0], n_cell[1], n_cell[2], (fftwf_complex*)get(), (float*)get(), FFTW_PATIENT);
+
+    if (save_wisdom) {
+      fftwf_export_wisdom_to_filename(wisdom_fname);
+    }
+
+    fftwf_forget_wisdom();
 }
 
 Grid::~Grid() {
-  fmt::print("Saving wisdom to {}\n", wisdom_fname);
-  fftwf_export_wisdom_to_filename(wisdom_fname);
+  fftwf_destroy_plan(reverse_plan);
+  fftwf_destroy_plan(forward_plan);
 }
 
 Grid::Grid(const Grid& other) : Grid(other.n_cell, other.box_size) {
@@ -140,9 +154,7 @@ void Grid::padded_to_real_order()
 
 void Grid::forward_fft()
 {
-    auto plan = fftwf_plan_dft_r2c_3d(n_cell[0], n_cell[1], n_cell[2], (float*)get(), (fftwf_complex*)get(), FFTW_PATIENT);
-    fftwf_execute(plan);
-    fftwf_destroy_plan(plan);
+    fftwf_execute(forward_plan);
 
     // Remember to multiply by VOLUME/TOT_NUM_PIXELS when converting from
     // real space to k-space.  Note: we will leave off factor of VOLUME, in
@@ -155,9 +167,7 @@ void Grid::forward_fft()
 
 void Grid::reverse_fft()
 {
-    auto plan = fftwf_plan_dft_c2r_3d(n_cell[0], n_cell[1], n_cell[2], (fftwf_complex*)get(), (float*)get(), FFTW_PATIENT);
-    fftwf_execute(plan);
-    fftwf_destroy_plan(plan);
+    fftwf_execute(reverse_plan);
 
     padded_to_real_order();
 }
