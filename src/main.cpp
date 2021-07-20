@@ -25,10 +25,9 @@
 
 int main(int argc, char* argv[])
 {
-    cxxopts::Options options(
-        "regrider", "Downsample gbpTrees and VELOCIraptor trees using FFTW");
+  cxxopts::Options options("regrider", "Downsample gbpTrees and VELOCIraptor trees using FFTW");
 
-    options.add_options() // clang-format off
+  options.add_options() // clang-format off
         ("d,dim", "new grid dimension", cxxopts::value<int>())
         ("g,gbptrees", "input gbpTrees grid file", cxxopts::value<std::string>())
         ("v,velociraptor", "input VELOCIraptor grid file", cxxopts::value<std::string>())
