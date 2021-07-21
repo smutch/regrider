@@ -38,6 +38,7 @@ while getopts ":hb:s:d:n:" opt; do
             ;;
     esac
 done
+if [[ $OPTIND == 1 ]]; then usage; exit 0; fi
 shift $((OPTIND-1))
 
 h5ls=$h5bin/h5ls
