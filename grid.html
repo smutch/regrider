@@ -42,7 +42,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Regrider utils" href="utils.html" />
-    <link rel="prev" title="Regridding GBPtrees grids" href="gbptrees.html" /> 
+    <link rel="prev" title="Regridding VELOCIraptor (swift) grids" href="velociraptor.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -90,6 +90,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="gbptrees.html">GBPtrees</a></li>
+<li class="toctree-l1"><a class="reference internal" href="velociraptor.html">VELOCIraptor</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">The Grid class</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Regrider utils</a></li>
 </ul>
@@ -221,7 +222,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n_cell_</strong> – The number of &#64;logical cells in each dimension </p></li>
+<li><p><strong>n_cell_</strong> – The number of logical cells in each dimension </p></li>
 <li><p><strong>box_size_</strong> – The size of the simulation volume in input units </p></li>
 </ul>
 </dd>
@@ -231,7 +232,7 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N4GridD0Ev">
 <span id="_CPPv3N4GridD0Ev"></span><span id="_CPPv2N4GridD0Ev"></span><span id="Grid::~Grid__void"></span><span class="target" id="classGrid_1ad99ba69a482dc64156ba5d39a78f3fce"></span><span class="sig-name descname"><span class="n"><span class="pre">~Grid</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4GridD0Ev" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Basic desctructor. This will store any accumulated wisdom from the grid before freeing the relevant memory. </p>
+<dd><p>Basic desctructor. This will free the fftw plans created during initialisation. </p>
 </dd></dl>
 
 <dl class="cpp function">
@@ -252,7 +253,7 @@
 <dd><p>Update the “size” of the grid for a new logical size. Note that this does not alter the size of the memory allocation, just what this allocation represents.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>n_cell_</strong> – The new number of &#64;logical cells in each dimension </p>
+<dd class="field-odd"><p><strong>n_cell_</strong> – The new number of logical cells in each dimension </p>
 </dd>
 </dl>
 </dd></dl>
@@ -378,7 +379,7 @@
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="utils.html" class="btn btn-neutral float-right" title="Regrider utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="gbptrees.html" class="btn btn-neutral float-left" title="Regridding GBPtrees grids" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="velociraptor.html" class="btn btn-neutral float-left" title="Regridding VELOCIraptor (swift) grids" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

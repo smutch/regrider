@@ -89,6 +89,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="gbptrees.html">GBPtrees</a></li>
+<li class="toctree-l1"><a class="reference internal" href="velociraptor.html">VELOCIraptor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="grid.html">The Grid class</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Regrider utils</a></li>
 </ul>
@@ -181,10 +182,23 @@
   -h, --help              show help
 </pre></div>
 </div>
+<p>A utility script is also provided to downsample a directory of VELOCIraptor grids:</p>
+<div class="highlight-man notranslate"><div class="highlight"><pre><span></span>Usage:
+    ./downsample_vr_directory.sh [OPTION...]
+
+    -b &lt;dir&gt;    Bin directory of hdf5 (location of h5ls and h5copy)
+    -s &lt;dir&gt;    Source directory containing VR grids
+    -d &lt;dir&gt;    Destination directory to place VR grids (will be created if necessary)
+    -n &lt;int&gt;    New grid dimension (n x n x n)
+
+All options must be present.
+</pre></div>
+</div>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="gbptrees.html">GBPtrees</a></li>
+<li class="toctree-l1"><a class="reference internal" href="velociraptor.html">VELOCIraptor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="grid.html">The Grid class</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Regrider utils</a></li>
 </ul>
