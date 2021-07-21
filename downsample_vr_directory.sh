@@ -55,7 +55,7 @@ for file_in in $source/snap_*.hdf5; do
     groups=$($h5ls $file_in | cut -d ' ' -f 1)
     for group in $groups; do
         if [[ $group != "PartType1" ]]; then
-            h5copy -i $file_in -o $file_out -s $group -d $group
+            $h5copy -i $file_in -o $file_out -s $group -d $group
         fi
     done
 
