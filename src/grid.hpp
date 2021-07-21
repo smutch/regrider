@@ -67,7 +67,7 @@ public:
   /** Basic constructor.
    * This will allocate the grid array, and store the corresponding size in various forms.
    *
-   * @param n_cell_ The number of @logical cells in each dimension
+   * @param n_cell_ The number of logical cells in each dimension
    * @param box_size_ The size of the simulation volume in input units
    */
   Grid(const std::array<int32_t, 3> n_cell_, const std::array<double, 3> box_size_);
@@ -88,7 +88,7 @@ public:
   /** Update the "size" of the grid for a new logical size.
    * Note that this does not alter the size of the memory allocation, just what this allocation represents.
    *
-   * @param n_cell_ The new number of @logical cells in each dimension
+   * @param n_cell_ The new number of logical cells in each dimension
    */
   void update_properties(const std::array<int32_t, 3> n_cell_);
 
