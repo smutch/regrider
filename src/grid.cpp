@@ -42,7 +42,7 @@ Grid::Grid(const std::array<int32_t, 3> n_cell_, const std::array<double, 3> box
   if (fftwf_import_wisdom_from_filename(wisdom_fname)) {
     fmt::print("Loaded wisdom from {}\n", wisdom_fname);
   } else {
-    fmt::print("Generating wisdom...\n");
+    fmt::print("Generating wisdom...");
     save_wisdom = true;
   }
 
@@ -53,6 +53,7 @@ Grid::Grid(const std::array<int32_t, 3> n_cell_, const std::array<double, 3> box
 
   if (save_wisdom) {
     fftwf_export_wisdom_to_filename(wisdom_fname);
+    print_done();
   }
 
   fftwf_forget_wisdom();

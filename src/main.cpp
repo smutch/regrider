@@ -22,6 +22,7 @@
 #include <fstream>
 
 #include "gbptrees.hpp"
+#include "velociraptor.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -54,6 +55,8 @@ int main(int argc, char* argv[])
 
     if (vm.count("gbptrees")) {
         regrid_gbptrees(vm["gbptrees"].as<std::string>(), vm["output"].as<std::string>(), vm["dim"].as<int>());
+    } else if (vm.count("velociraptor")) {
+        regrid_velociraptor(vm["velociraptor"].as<std::string>(), vm["output"].as<std::string>(), vm["dim"].as<int>());
     }
 
     fftwf_cleanup_threads();
