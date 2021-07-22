@@ -109,7 +109,7 @@ void regrid_velociraptor(const std::string fname_in, const std::string fname_out
   }
 
   // Remember to update the grid dimensions
-  file_out.openGroup("/Parameters")
-    .openAttribute("DensityGrids:grid_dim")
-    .write(H5::PredType::NATIVE_INT, new_n_cell.data());
+  group_out = file_out.openGroup("/Parameters");
+  group_out.openAttribute("DensityGrids:grid_dim").write(H5::PredType::NATIVE_INT, new_n_cell.data());
+  group_out.openAttribute("Snapshots:grid_dim").write(H5::PredType::NATIVE_INT, new_n_cell.data());
 }
