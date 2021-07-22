@@ -13,8 +13,31 @@ Regrider
 Installation
 ============
 
-Coming soon...
+The easiest way to install and work with the code is using `Spack`_. Once you
+have `Spack`_ installed::
 
+    spack env create -d . spack.yaml
+    spack env activate .
+
+You can then build the code with the usual CMake commands::
+
+    cmake -S. -Bbuild
+    cmake --build build
+
+If you don't want to use Spack then the following libraries must be installed
+and the appropropriate flags passed to CMake so it can find them (typically
+`CMAKE_PREFIX_PATH=...`).
+
+* `HDF5`_ (with c++ and high-level libraries enabled)
+* `FFTW3`_ (with openmp support)
+* `fmt`_ (compiled with c++11 standard)
+* `Criterion`_
+
+.. _Spack: https://spack.readthedocs.io
+.. _HDF5: https://www.hdfgroup.org/solutions/hdf5/
+.. _FFTW3: http://www.fftw.org/
+.. _fmt: https://fmt.dev/latest/index.html
+.. _Criterion: https://criterion.readthedocs.io/en/master/
 
 Usage
 =====
