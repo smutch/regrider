@@ -13,8 +13,12 @@
    "spec": "fftw@3.3.9+openmp"
   },
   {
-   "hash": "ammh6uobyrtaigrzxzmrrh5kk746coih",
+   "hash": "vlilkhij4szzooh3m7zouq6ic24aiq4t",
    "spec": "criterion-git"
+  },
+  {
+   "hash": "ekonecevhjhtictq623kz2m75zxztrqz",
+   "spec": "fmt"
   }
  ],
  "concrete_specs": {
@@ -347,9 +351,74 @@
     "hash": "il3btrj4k5tgnmd3yhvfnk6vtmqtxhg6"
    }
   },
-  "ammh6uobyrtaigrzxzmrrh5kk746coih": {
+  "vlilkhij4szzooh3m7zouq6ic24aiq4t": {
    "criterion-git": {
     "version": "2.3.3",
+    "arch": {
+     "platform": "darwin",
+     "platform_os": "bigsur",
+     "target": {
+      "name": "skylake",
+      "vendor": "GenuineIntel",
+      "features": [
+       "adx",
+       "aes",
+       "avx",
+       "avx2",
+       "bmi1",
+       "bmi2",
+       "clflushopt",
+       "f16c",
+       "fma",
+       "mmx",
+       "movbe",
+       "pclmulqdq",
+       "popcnt",
+       "rdrand",
+       "rdseed",
+       "sse",
+       "sse2",
+       "sse4_1",
+       "sse4_2",
+       "ssse3",
+       "xsavec",
+       "xsaveopt"
+      ],
+      "generation": 0,
+      "parents": [
+       "broadwell"
+      ]
+     }
+    },
+    "compiler": {
+     "name": "gcc",
+     "version": "11.1.0"
+    },
+    "namespace": "spack-repo",
+    "parameters": {
+     "build_type": "RelWithDebInfo",
+     "ipo": false,
+     "cflags": [],
+     "cppflags": [],
+     "cxxflags": [],
+     "fflags": [],
+     "ldflags": [],
+     "ldlibs": []
+    },
+    "dependencies": {
+     "cmake": {
+      "hash": "dntkszc43eer63th2pjcqfbdppbmq7vy",
+      "type": [
+       "build"
+      ]
+     }
+    },
+    "hash": "uwld45zpyp6t4ydrhg4uuzvhycvghfj5"
+   }
+  },
+  "ekonecevhjhtictq623kz2m75zxztrqz": {
+   "fmt": {
+    "version": "7.1.3",
     "arch": {
      "platform": "darwin",
      "platform_os": "bigsur",
@@ -393,7 +462,9 @@
     "namespace": "builtin",
     "parameters": {
      "build_type": "RelWithDebInfo",
+     "cxxstd": "11",
      "ipo": false,
+     "pic": true,
      "cflags": [],
      "cppflags": [],
      "cxxflags": [],
@@ -409,7 +480,7 @@
       ]
      }
     },
-    "hash": "elokvtblotc7h5hviaanwj3azl6m6ado"
+    "hash": "5ayyb6cpvrzo6m2mwmcmtzyjoy55vnyl"
    }
   }
  }

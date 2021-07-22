@@ -1,4 +1,9 @@
+.envrc
+.cache
+.python-version
+.spack-env
 *.pyc
+*.wisdom
 
 compile_commands.json
 build/

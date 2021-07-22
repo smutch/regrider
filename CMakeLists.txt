@@ -12,7 +12,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # write compile_commands.json file
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
-set(default_build_type "Debug")
+set(default_build_type "RelWithDebInfo")
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS "Setting build type to '${default_build_type}' as none was specified.")
   set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE
@@ -41,7 +41,7 @@ target_include_directories(regrider_lib PUBLIC "${CMAKE_SOURCE_DIR}/include")
 find_package(OpenMP REQUIRED)
 target_link_libraries(regrider_lib PRIVATE OpenMP::OpenMP_CXX)
 
-add_subdirectory(vendor/fmt EXCLUDE_FROM_ALL)
+find_package(fmt REQUIRED)
 target_link_libraries(regrider_lib PUBLIC fmt::fmt)
 
 find_package(FFTW REQUIRED)

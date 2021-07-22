@@ -4,7 +4,7 @@
 # configuration settings.
 spack:
   # add package specs to the `specs` list
-  specs: [hdf5@1.12.1+cxx+hl, fftw@3.3.9+openmp, criterion-git]
+  specs: [hdf5@1.12.1+cxx+hl, fftw@3.3.9+openmp, criterion-git, fmt]
   view: true
   packages:
     all:
