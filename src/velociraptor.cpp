@@ -104,6 +104,12 @@ void regrid_velociraptor(const std::string fname_in, const std::string fname_out
                                     static_cast<unsigned long long>(n_cell[1]),
                                     static_cast<unsigned long long>(n_cell[2]) };
     group_out.createDataSet(dset_name, H5::PredType::NATIVE_FLOAT, H5::DataSpace(3, dims.data()));
+
     print_done();
   }
+
+  // Remember to update the grid dimensions
+  file_out.openGroup("/Parameters")
+    .openAttribute("DensityGrids:grid_dim")
+    .write(H5::PredType::NATIVE_INT, new_n_cell.data());
 }
