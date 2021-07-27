@@ -23,9 +23,6 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 # compile flags
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native")
-set(CMAKE_CXX_FLAGS_DEBUG "-O1 -g -fsanitize=address,undefined,leak -fno-omit-frame-pointer -DDEBUG")
-
 set(SRC
     src/utils.cpp
     src/grid.cpp
@@ -35,8 +32,15 @@ set(SRC
 
 add_library(regrider_lib STATIC ${SRC})
 set_property(TARGET regrider_lib PROPERTY CXX_STANDARD 11)  # WARNING: This must be 11 for hdf5 to work!!!
-
 target_include_directories(regrider_lib PUBLIC "${CMAKE_SOURCE_DIR}/include")
+
+set(sanitize_flags -fsanitize=address,undefined,leak -fno-omit-frame-pointer)
+target_compile_options(regrider_lib PUBLIC
+    $<$<CONFIG:Debug>: ${sanitize_flags}>
+    $<$<CONFIG:Release>: -march=native>
+)
+target_compile_definitions(regrider_lib PUBLIC $<$<CONFIG:Debug>:DEBUG>)
+target_link_options(regrider_lib PUBLIC $<$<CONFIG:Debug>: ${sanitize_flags}>)
 
 find_package(OpenMP REQUIRED)
 target_link_libraries(regrider_lib PRIVATE OpenMP::OpenMP_CXX)
