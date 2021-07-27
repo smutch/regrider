@@ -62,7 +62,8 @@ void regrid_velociraptor(const std::string fname_in, const std::string fname_out
   auto grid = Grid(n_cell, box_size);
   const double radius = (double)grid.box_size[0] / (double)new_dim * 0.5;
 
-  auto group_out = file_out.createGroup("/PartType1").createGroup("/Grids");
+  file_out.createGroup("/PartType1");
+  auto group_out = file_out.createGroup("/PartType1/Grids");
   auto group_in = file_in.openGroup("/PartType1/Grids");
 
   for (int property = X_VELOCITY; property <= DENSITY; ++property) {
@@ -100,16 +101,24 @@ void regrid_velociraptor(const std::string fname_in, const std::string fname_out
     grid.sample(new_n_cell);
 
     fmt::print("Writing subsampled grid {}... ", dset_name);
-    std::array<hsize_t, 3> dims = { static_cast<unsigned long long>(n_cell[0]),
-                                    static_cast<unsigned long long>(n_cell[1]),
-                                    static_cast<unsigned long long>(n_cell[2]) };
-    group_out.createDataSet(dset_name, H5::PredType::NATIVE_FLOAT, H5::DataSpace(3, dims.data()));
+    std::array<hsize_t, 3> dims = { static_cast<unsigned long long>(new_n_cell[0]),
+                                    static_cast<unsigned long long>(new_n_cell[1]),
+                                    static_cast<unsigned long long>(new_n_cell[2]) };
+    auto ds = group_out.createDataSet(dset_name, H5::PredType::NATIVE_FLOAT, H5::DataSpace(3, dims.data()));
+    ds.write(grid.get(), H5::PredType::NATIVE_FLOAT);
 
     print_done();
   }
 
   // Remember to update the grid dimensions
   group_out = file_out.openGroup("/Parameters");
-  group_out.openAttribute("DensityGrids:grid_dim").write(H5::PredType::NATIVE_INT, new_n_cell.data());
-  group_out.openAttribute("Snapshots:grid_dim").write(H5::PredType::NATIVE_INT, new_n_cell.data());
+
+  {
+    auto attr = group_out.openAttribute("DensityGrids:grid_dim");
+    attr.write(attr.getStrType(), fmt::format("{}", new_dim));
+  }
+  {
+    auto attr = group_out.openAttribute("Snapshots:grid_dim");
+    attr.write(attr.getStrType(), fmt::format("{}", new_dim));
+  }
 }
