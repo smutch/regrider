@@ -159,6 +159,8 @@ void Grid::padded_to_real_order()
 
 void Grid::forward_fft()
 {
+  real_to_padded_order();
+
   fftwf_execute(forward_plan);
 
   // Remember to multiply by VOLUME/TOT_NUM_PIXELS when converting from
