@@ -2,6 +2,7 @@
 .cache
 .python-version
 .spack-env
+spack-env
 *.pyc
 *.wisdom
 
